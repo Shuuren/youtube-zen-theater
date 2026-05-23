@@ -1,0 +1,212 @@
+@view-transition {
+  navigation: auto;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html.ytzt-watch-page,
+html.ytzt-watch-page body {
+  background: #000 !important;
+}
+
+html.ytzt-watch-page.ytzt-hide-header ytd-masthead,
+html.ytzt-watch-page.ytzt-hide-header #masthead-container,
+html.ytzt-watch-page.ytzt-hide-header #guide,
+html.ytzt-watch-page.ytzt-hide-header tp-yt-app-drawer {
+  display: none !important;
+}
+
+html.ytzt-watch-page.ytzt-reveal-header-enabled.ytzt-hide-header.ytzt-reveal-header ytd-masthead,
+html.ytzt-watch-page.ytzt-reveal-header-enabled.ytzt-hide-header.ytzt-reveal-header #masthead-container {
+  display: block !important;
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  left: 0 !important;
+  z-index: 2147483646 !important;
+  background: rgba(15, 15, 15, 0.94) !important;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.34) !important;
+}
+
+html.ytzt-watch-page ytd-app,
+html.ytzt-watch-page ytd-page-manager,
+html.ytzt-watch-page #page-manager {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+html.ytzt-watch-page ytd-watch-flexy {
+  --ytd-watch-flexy-masthead-height: 0px !important;
+  --ytd-masthead-height: 0px !important;
+}
+
+html.ytzt-watch-page ytd-watch-flexy[theater] #columns,
+html.ytzt-watch-page ytd-watch-flexy[theater] #primary,
+html.ytzt-watch-page ytd-watch-flexy[theater] #primary-inner {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+}
+
+html.ytzt-watch-page.ytzt-hide-recommendations ytd-watch-flexy[theater] #secondary,
+html.ytzt-watch-page.ytzt-hide-recommendations ytd-watch-flexy[theater] #related,
+html.ytzt-watch-page.ytzt-hide-recommendations ytd-watch-flexy[theater] ytd-watch-next-secondary-results-renderer {
+  display: none !important;
+}
+
+html.ytzt-watch-page ytd-watch-flexy[theater] #player-theater-container,
+html.ytzt-watch-page ytd-watch-flexy[theater] #full-bleed-container,
+html.ytzt-watch-page ytd-watch-flexy[theater] #player-full-bleed-container,
+html.ytzt-watch-page ytd-watch-flexy[theater] #player-container-outer,
+html.ytzt-watch-page ytd-watch-flexy[theater] #player-container-inner,
+html.ytzt-watch-page ytd-watch-flexy[theater] #player-container,
+html.ytzt-watch-page ytd-watch-flexy[theater] #movie_player,
+html.ytzt-watch-page ytd-watch-flexy[theater] .html5-video-player {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-width: 100vw !important;
+}
+
+html.ytzt-watch-page ytd-watch-flexy[theater] #player-theater-container,
+html.ytzt-watch-page ytd-watch-flexy[theater] #full-bleed-container,
+html.ytzt-watch-page ytd-watch-flexy[theater] #player-full-bleed-container,
+html.ytzt-watch-page ytd-watch-flexy[theater] #player-container-outer,
+html.ytzt-watch-page ytd-watch-flexy[theater] #player-container-inner,
+html.ytzt-watch-page ytd-watch-flexy[theater] #player-container {
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  max-height: 100dvh !important;
+}
+
+html.ytzt-watch-page ytd-watch-flexy[theater] #movie_player,
+html.ytzt-watch-page ytd-watch-flexy[theater] .html5-video-player {
+  height: 100% !important;
+  max-height: 100% !important;
+}
+
+html.ytzt-watch-page #cinematics,
+html.ytzt-watch-page #cinematics-container,
+html.ytzt-watch-page .ytp-cinematic-container,
+html.ytzt-watch-page .ytp-cinematic-container canvas,
+html.ytzt-watch-page .ytp-gradient-top,
+html.ytzt-watch-page .ytp-gradient-bottom {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+html.ytzt-watch-page ytd-watch-flexy[theater] video.html5-main-video {
+  filter: none !important;
+  opacity: 1 !important;
+  object-fit: contain !important;
+}
+
+html.ytzt-watch-page ytd-watch-flexy[theater] #below,
+html.ytzt-watch-page ytd-watch-flexy[theater] #meta,
+html.ytzt-watch-page ytd-watch-flexy[theater] #comments {
+  max-width: 1120px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+html.ytzt-watch-page ytd-watch-flexy[theater] #below {
+  padding-top: 24px !important;
+}
+
+html.ytzt-watch-page.ytzt-reveal-meta-enabled ytd-watch-flexy[theater] #below {
+  position: fixed !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  z-index: 2147483645 !important;
+  box-sizing: border-box !important;
+  width: min(460px, calc(100vw - 40px)) !important;
+  max-width: min(460px, calc(100vw - 40px)) !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  overflow: auto !important;
+  overscroll-behavior: contain !important;
+  padding: 22px 18px 28px !important;
+  color: #fff !important;
+  background: rgba(10, 10, 10, 0.94) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 160ms ease, transform 160ms ease !important;
+}
+
+html.ytzt-watch-page.ytzt-reveal-meta-enabled.ytzt-side-right ytd-watch-flexy[theater] #below {
+  right: 0 !important;
+  left: auto !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: -24px 0 54px rgba(0, 0, 0, 0.42) !important;
+  transform: translateX(100%) !important;
+}
+
+html.ytzt-watch-page.ytzt-reveal-meta-enabled.ytzt-side-left ytd-watch-flexy[theater] #below {
+  right: auto !important;
+  left: 0 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 24px 0 54px rgba(0, 0, 0, 0.42) !important;
+  transform: translateX(-100%) !important;
+}
+
+html.ytzt-watch-page.ytzt-reveal-meta-enabled.ytzt-reveal-meta ytd-watch-flexy[theater] #below,
+html.ytzt-watch-page.ytzt-reveal-meta-enabled ytd-watch-flexy[theater] #below:hover {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translateX(0) !important;
+}
+
+html.ytzt-watch-page.ytzt-reveal-meta-enabled ytd-watch-flexy[theater] #below #comments,
+html.ytzt-watch-page.ytzt-reveal-meta-enabled ytd-watch-flexy[theater] #below ytd-comments {
+  display: block !important;
+  visibility: visible !important;
+}
+
+html.ytzt-watch-page .ytzt-header-hover-zone,
+html.ytzt-watch-page .ytzt-meta-hover-zone {
+  position: fixed !important;
+  right: 0 !important;
+  left: 0 !important;
+  z-index: 2147483644 !important;
+  display: block !important;
+  pointer-events: auto !important;
+}
+
+html.ytzt-watch-page .ytzt-header-hover-zone {
+  top: 0 !important;
+  height: 18px !important;
+}
+
+html.ytzt-watch-page.ytzt-reveal-header .ytzt-header-hover-zone {
+  height: 86px !important;
+}
+
+html.ytzt-watch-page .ytzt-meta-hover-zone {
+  top: 72px !important;
+  bottom: 96px !important;
+  width: 28px !important;
+  height: auto !important;
+}
+
+html.ytzt-watch-page.ytzt-side-right .ytzt-meta-hover-zone {
+  right: 0 !important;
+  left: auto !important;
+}
+
+html.ytzt-watch-page.ytzt-side-left .ytzt-meta-hover-zone {
+  right: auto !important;
+  left: 0 !important;
+}
+
+html.ytzt-watch-page.ytzt-reveal-meta .ytzt-meta-hover-zone {
+  width: min(460px, calc(100vw - 40px)) !important;
+}

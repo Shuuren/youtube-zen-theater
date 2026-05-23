@@ -1,0 +1,155 @@
+@view-transition {
+  navigation: auto;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  width: 328px;
+  margin: 0;
+  background: #0a0a0a;
+  color: #f7f7f7;
+  font: 13px/1.4 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.panel {
+  padding: 14px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 2px 14px;
+}
+
+.mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #2d2d2d;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #181818, #080808);
+}
+
+.mark svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: #f7f7f7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.mark path:nth-of-type(1) {
+  fill: #ff304f;
+  stroke: #ff304f;
+}
+
+h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+p {
+  margin: 2px 0 0;
+  color: #a3a3a3;
+  font-size: 12px;
+}
+
+.settings {
+  display: grid;
+  gap: 8px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 54px;
+  padding: 10px 12px;
+  border: 1px solid #252525;
+  border-radius: 8px;
+  background: #111;
+}
+
+strong,
+small {
+  display: block;
+}
+
+strong {
+  font-size: 13px;
+  font-weight: 650;
+}
+
+small {
+  margin-top: 2px;
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+input[type="checkbox"] {
+  position: relative;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 22px;
+  appearance: none;
+  border: 1px solid #343434;
+  border-radius: 999px;
+  background: #1c1c1c;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease;
+}
+
+input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fafafa;
+  transition: transform 140ms ease;
+}
+
+input[type="checkbox"]:checked {
+  border-color: #ff304f;
+  background: #ff304f;
+}
+
+input[type="checkbox"]:checked::after {
+  transform: translateX(16px);
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: 2px solid #f7f7f7;
+  outline-offset: 2px;
+}
+
+select {
+  min-width: 88px;
+  height: 32px;
+  padding: 0 28px 0 10px;
+  border: 1px solid #343434;
+  border-radius: 8px;
+  background: #1c1c1c;
+  color: #f7f7f7;
+  font: inherit;
+  cursor: pointer;
+}
+
+select:focus-visible {
+  outline: 2px solid #f7f7f7;
+  outline-offset: 2px;
+}
