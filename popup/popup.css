@@ -7,7 +7,7 @@ html {
 }
 
 body {
-  width: 328px;
+  width: 344px;
   margin: 0;
   background: #0a0a0a;
   color: #f7f7f7;
@@ -67,7 +67,26 @@ p {
 
 .settings {
   display: grid;
-  gap: 8px;
+  gap: 12px;
+}
+
+.group {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  margin: 0 0 1px;
+  padding: 0 2px;
+  color: #d6d6d6;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .row {
@@ -75,8 +94,8 @@ p {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  min-height: 54px;
-  padding: 10px 12px;
+  min-height: 50px;
+  padding: 9px 11px;
   border: 1px solid #252525;
   border-radius: 8px;
   background: #111;

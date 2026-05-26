@@ -23,72 +23,114 @@
       </header>
 
       <section class="settings" aria-label="Settings">
-        <label class="row">
-          <span>
-            <strong>Auto Zen</strong>
-            <small>Apply automatically on videos</small>
-          </span>
-          <input type="checkbox" id="autoZen">
-        </label>
+        <fieldset class="group">
+          <legend>Playback</legend>
+          <label class="row">
+            <span>
+              <strong>Auto Zen</strong>
+              <small>Apply automatically on videos</small>
+            </span>
+            <input type="checkbox" id="autoZen">
+          </label>
 
-        <label class="row">
-          <span>
-            <strong>Hide live chat</strong>
-            <small>Click YouTube's native close control</small>
-          </span>
-          <input type="checkbox" id="hideLiveChat">
-        </label>
+          <label class="row">
+            <span>
+              <strong>T shortcut</strong>
+              <small>Toggle Zen like theater mode</small>
+            </span>
+            <input type="checkbox" id="shortcutEnabled">
+          </label>
+        </fieldset>
 
-        <label class="row">
-          <span>
-            <strong>Hide top bar</strong>
-            <small>Remove search, profile, and nav</small>
-          </span>
-          <input type="checkbox" id="hideHeader">
-        </label>
+        <fieldset class="group">
+          <legend>Hide</legend>
+          <label class="row">
+            <span>
+              <strong>Live chat</strong>
+              <small>Click YouTube's native close control</small>
+            </span>
+            <input type="checkbox" id="hideLiveChat">
+          </label>
 
-        <label class="row">
-          <span>
-            <strong>Top hover reveal</strong>
-            <small>Show top bar at the upper edge</small>
-          </span>
-          <input type="checkbox" id="revealHeaderOnHover">
-        </label>
+          <label class="row">
+            <span>
+              <strong>Top bar</strong>
+              <small>Remove search, profile, and nav</small>
+            </span>
+            <input type="checkbox" id="hideHeader">
+          </label>
 
-        <label class="row">
-          <span>
-            <strong>Side hover reveal</strong>
-            <small>Show title, channel, and comments</small>
-          </span>
-          <input type="checkbox" id="revealMetaOnHover">
-        </label>
+          <label class="row">
+            <span>
+              <strong>Recommendations</strong>
+              <small>Keep only video and below content</small>
+            </span>
+            <input type="checkbox" id="hideRecommendations">
+          </label>
+        </fieldset>
 
-        <label class="row">
-          <span>
-            <strong>Panel side</strong>
-            <small>Choose the hover edge</small>
-          </span>
-          <select id="sideHoverPosition">
-            <option value="right">Right</option>
-            <option value="left">Left</option>
-          </select>
-        </label>
+        <fieldset class="group">
+          <legend>Reveal</legend>
+          <label class="row">
+            <span>
+              <strong>Top hover</strong>
+              <small>Show top bar at the upper edge</small>
+            </span>
+            <input type="checkbox" id="revealHeaderOnHover">
+          </label>
 
-        <label class="row">
-          <span>
-            <strong>Hide recommendations</strong>
-            <small>Keep only video and below content</small>
-          </span>
-          <input type="checkbox" id="hideRecommendations">
-        </label>
+          <label class="row">
+            <span>
+              <strong>Side details</strong>
+              <small>Show title, channel, and comments</small>
+            </span>
+            <input type="checkbox" id="revealMetaOnHover">
+          </label>
 
-        <label class="row">
-          <span>
-            <strong>T shortcut</strong>
-            <small>Toggle Zen like theater mode</small>
-          </span>
-          <input type="checkbox" id="shortcutEnabled">
-        </label>
+          <label class="row">
+            <span>
+              <strong>Open style</strong>
+              <small>Choose hover edge or drawer button</small>
+            </span>
+            <select id="sideRevealMode">
+              <option value="drawer">Drawer</option>
+              <option value="hover">Hover</option>
+            </select>
+          </label>
+
+          <label class="row">
+            <span>
+              <strong>Side</strong>
+              <small>Choose the reveal edge</small>
+            </span>
+            <select id="sideHoverPosition">
+              <option value="right">Right</option>
+              <option value="left">Left</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend>Appearance</legend>
+          <label class="row">
+            <span>
+              <strong>Drawer build</strong>
+              <small>Use Zen drawer or YouTube surface</small>
+            </span>
+            <select id="drawerImplementation">
+              <option value="custom">Zen</option>
+              <option value="native">Native</option>
+            </select>
+          </label>
+
+          <label class="row">
+            <span>
+              <strong>Liquid glass</strong>
+              <small>Transparent blur effect</small>
+            </span>
+            <input type="checkbox" id="drawerGlassEffect">
+          </label>
+        </fieldset>
       </section>
     </main>
     <script src="popup.js"></script>

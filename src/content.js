@@ -5,7 +5,10 @@ const DEFAULT_SETTINGS = {
   hideRecommendations: true,
   revealHeaderOnHover: true,
   revealMetaOnHover: true,
+  sideRevealMode: 'drawer',
+  drawerImplementation: 'custom',
   sideHoverPosition: 'right',
+  drawerGlassEffect: true,
   shortcutEnabled: true
 };
 
@@ -34,15 +37,20 @@ const THEATER_BUTTON_SELECTORS = [
 
 const WATCH_URL_PATTERN = /^\/watch\b|^\/live\//;
 const LIVE_CHAT_URL_PATTERN = /^\/live_chat\b|^\/live_chat_replay\b/;
+const META_REVEAL_CLASSES = ['ytzt-reveal-meta-hover', 'ytzt-reveal-meta-drawer'];
 
 let settings = { ...DEFAULT_SETTINGS };
 let currentUrl = location.href;
-let applyTimer = 0;
+const applyTimers = new Map();
 let observer = null;
+let observerTimer = 0;
 let chatClickCount = 0;
+let liveChatCloseResolved = false;
+let wideCookieWritten = false;
 let zenEnabled = DEFAULT_SETTINGS.autoZen;
 let headerHoverZone = null;
 let metaHoverZone = null;
+let metaDrawerButton = null;
 let lastShortcutAt = 0;
 
 init();
@@ -148,26 +156,43 @@ function isLiveChatFramePage() {
 }
 
 function scheduleApply(delay = 120) {
-  window.clearTimeout(applyTimer);
-  applyTimer = window.setTimeout(applyZen, delay);
+  const timerKey = delay > 500 ? 'settle' : 'soon';
+  window.clearTimeout(applyTimers.get(timerKey));
+
+  const timer = window.setTimeout(() => {
+    applyTimers.delete(timerKey);
+    applyZen();
+  }, delay);
+
+  applyTimers.set(timerKey, timer);
 }
 
 function applyZen() {
   const watchPage = isWatchPage();
   const active = zenEnabled && watchPage;
+  const drawerIsNative = settings.sideRevealMode !== 'hover' && settings.drawerImplementation === 'native';
+  const drawerIsCustom = settings.sideRevealMode !== 'hover' && !drawerIsNative;
+  const shouldRevealMeta = active && settings.revealMetaOnHover;
 
   document.documentElement.classList.toggle('ytzt-watch-page', active);
   document.documentElement.classList.toggle('ytzt-hide-header', active && settings.hideHeader);
   document.documentElement.classList.toggle('ytzt-hide-recommendations', active && settings.hideRecommendations);
   document.documentElement.classList.toggle('ytzt-reveal-header-enabled', active && settings.hideHeader && settings.revealHeaderOnHover);
-  document.documentElement.classList.toggle('ytzt-reveal-meta-enabled', active && settings.revealMetaOnHover);
+  document.documentElement.classList.toggle('ytzt-reveal-meta-enabled', shouldRevealMeta);
+  document.documentElement.classList.toggle('ytzt-side-mode-hover', active && settings.sideRevealMode === 'hover');
+  document.documentElement.classList.toggle('ytzt-side-mode-drawer', active && settings.sideRevealMode !== 'hover');
+  document.documentElement.classList.toggle('ytzt-drawer-custom', active && drawerIsCustom);
+  document.documentElement.classList.toggle('ytzt-drawer-native', active && drawerIsNative);
   document.documentElement.classList.toggle('ytzt-side-left', active && settings.sideHoverPosition === 'left');
   document.documentElement.classList.toggle('ytzt-side-right', active && settings.sideHoverPosition !== 'left');
+  document.documentElement.classList.toggle('ytzt-drawer-glass', active && settings.drawerImplementation !== 'native' && settings.drawerGlassEffect);
+  document.documentElement.classList.toggle('ytzt-drawer-solid', active && settings.drawerImplementation !== 'native' && !settings.drawerGlassEffect);
   syncHoverZones(active);
 
   if (!active) {
     chatClickCount = 0;
-    document.documentElement.classList.remove('ytzt-reveal-header', 'ytzt-reveal-meta');
+    liveChatCloseResolved = false;
+    document.documentElement.classList.remove('ytzt-reveal-header', 'ytzt-reveal-meta', ...META_REVEAL_CLASSES);
     return;
   }
 
@@ -182,8 +207,13 @@ function applyZen() {
 }
 
 function setWideCookie() {
+  if (wideCookieWritten) {
+    return;
+  }
+
   const expires = 'Fri, 31 Dec 9999 23:59:59 GMT';
   document.cookie = `wide=1; domain=.youtube.com; path=/; expires=${expires}; SameSite=Lax`;
+  wideCookieWritten = true;
 }
 
 function forceNativeTheater() {
@@ -216,10 +246,23 @@ function toggleZenMode() {
 
 function syncHoverZones(active) {
   const wantsHeaderZone = active && settings.hideHeader && settings.revealHeaderOnHover;
-  const wantsMetaZone = active && settings.revealMetaOnHover;
+  const wantsMetaZone = active && settings.revealMetaOnHover && settings.sideRevealMode === 'hover';
+  const wantsMetaDrawerButton = active && settings.revealMetaOnHover && settings.sideRevealMode !== 'hover';
 
   headerHoverZone = syncHoverZone(headerHoverZone, 'ytzt-header-hover-zone', wantsHeaderZone, 'ytzt-reveal-header');
-  metaHoverZone = syncHoverZone(metaHoverZone, 'ytzt-meta-hover-zone', wantsMetaZone, 'ytzt-reveal-meta');
+
+  if (wantsMetaZone) {
+    metaHoverZone = syncHoverZone(metaHoverZone, 'ytzt-meta-hover-zone', true, 'ytzt-reveal-meta-hover');
+  } else {
+    metaHoverZone?.remove();
+    metaHoverZone = null;
+    document.documentElement.classList.remove('ytzt-reveal-meta-hover');
+    if (!wantsMetaDrawerButton) {
+      clearMetaReveal();
+    }
+  }
+
+  metaDrawerButton = syncMetaDrawerButton(metaDrawerButton, wantsMetaDrawerButton);
 }
 
 function syncHoverZone(zone, className, shouldExist, revealClass) {
@@ -240,15 +283,65 @@ function syncHoverZone(zone, className, shouldExist, revealClass) {
   return nextZone;
 }
 
+function syncMetaDrawerButton(button, shouldExist) {
+  if (!shouldExist) {
+    button?.remove();
+    document.documentElement.classList.remove('ytzt-reveal-meta-drawer');
+    return null;
+  }
+
+  if (button?.isConnected) {
+    updateMetaDrawerButton(button);
+    return button;
+  }
+
+  const nextButton = document.createElement('button');
+  nextButton.type = 'button';
+  nextButton.className = 'ytzt-meta-drawer-button';
+  nextButton.addEventListener('click', toggleMetaDrawer);
+  document.documentElement.append(nextButton);
+  updateMetaDrawerButton(nextButton);
+  return nextButton;
+}
+
+function toggleMetaDrawer(event) {
+  event?.preventDefault();
+  event?.stopPropagation();
+  event?.stopImmediatePropagation();
+
+  const nextOpen = !document.documentElement.classList.contains('ytzt-reveal-meta-drawer');
+  document.documentElement.classList.toggle('ytzt-reveal-meta-drawer', nextOpen);
+  document.documentElement.classList.remove('ytzt-reveal-meta');
+  if (metaDrawerButton) {
+    updateMetaDrawerButton(metaDrawerButton);
+  }
+}
+
+function updateMetaDrawerButton(button) {
+  const isOpen = document.documentElement.classList.contains('ytzt-reveal-meta-drawer');
+  const isLeftSide = settings.sideHoverPosition === 'left';
+  button.setAttribute('aria-label', `${isOpen ? 'Hide' : 'Show'} video details`);
+  button.setAttribute('aria-expanded', String(isOpen));
+  button.textContent = isOpen === isLeftSide ? '‹' : '›';
+}
+
+function clearMetaReveal() {
+  document.documentElement.classList.remove('ytzt-reveal-meta', ...META_REVEAL_CLASSES);
+}
+
+function isMetaRevealed() {
+  return META_REVEAL_CLASSES.some((className) => document.documentElement.classList.contains(className));
+}
+
 function handleHoverReveal(event) {
   if (!zenEnabled || !isWatchPage()) {
     return;
   }
 
   const canRevealHeader = settings.hideHeader && settings.revealHeaderOnHover;
-  const canRevealMeta = settings.revealMetaOnHover;
+  const canRevealMeta = settings.revealMetaOnHover && settings.sideRevealMode === 'hover';
   const headerOpen = document.documentElement.classList.contains('ytzt-reveal-header');
-  const metaOpen = document.documentElement.classList.contains('ytzt-reveal-meta');
+  const metaOpen = isMetaRevealed();
   const headerLimit = headerOpen ? 96 : 22;
   const metaLimit = metaOpen ? 460 : 28;
   const sideRevealTopLimit = headerOpen ? 104 : 72;
@@ -258,16 +351,26 @@ function handleHoverReveal(event) {
   const isInsideSideRevealEdge = isLeftSideReveal ? event.clientX <= metaLimit : event.clientX >= window.innerWidth - metaLimit;
 
   document.documentElement.classList.toggle('ytzt-reveal-header', canRevealHeader && event.clientY <= headerLimit);
-  document.documentElement.classList.toggle('ytzt-reveal-meta', canRevealMeta && isInsideSideRevealBand && isInsideSideRevealEdge);
+
+  if (canRevealMeta) {
+    document.documentElement.classList.toggle('ytzt-reveal-meta-hover', isInsideSideRevealBand && isInsideSideRevealEdge);
+    document.documentElement.classList.remove('ytzt-reveal-meta');
+  }
 }
 
 function hideLiveChatByClick() {
+  if (liveChatCloseResolved) {
+    return;
+  }
+
   const chatFrame = document.querySelector('ytd-live-chat-frame#chat, ytd-live-chat-frame');
   if (!chatFrame || chatFrame.hasAttribute('collapsed') || chatFrame.collapsed === true) {
+    liveChatCloseResolved = Boolean(chatFrame);
     return;
   }
 
   if (chatClickCount > 12) {
+    liveChatCloseResolved = true;
     return;
   }
 
@@ -278,6 +381,7 @@ function hideLiveChatByClick() {
 
   chatClickCount += 1;
   closeButton.click();
+  scheduleApply(800);
 }
 
 function scheduleFrameChatClose(delay) {
@@ -367,6 +471,7 @@ function handleNavigation() {
 
   currentUrl = location.href;
   chatClickCount = 0;
+  liveChatCloseResolved = false;
   if (settings.autoZen && isWatchPage()) {
     zenEnabled = true;
   }
@@ -377,18 +482,28 @@ function handleNavigation() {
 
 function startObserver() {
   observer?.disconnect();
+  window.clearTimeout(observerTimer);
+  observerTimer = 0;
+
   observer = new MutationObserver(() => {
-    handleNavigation();
-    if (isWatchPage()) {
-      scheduleApply(180);
+    if (observerTimer) {
+      return;
     }
+
+    observerTimer = window.setTimeout(() => {
+      observerTimer = 0;
+      handleNavigation();
+      if (isWatchPage()) {
+        scheduleApply(180);
+      }
+    }, 120);
   });
 
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true,
     attributes: true,
-    attributeFilter: ['theater', 'collapsed', 'hidden', 'class']
+    attributeFilter: ['theater', 'collapsed', 'hidden']
   });
 }
 

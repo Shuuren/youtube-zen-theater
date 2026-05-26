@@ -5,7 +5,10 @@ const DEFAULT_SETTINGS = {
   hideRecommendations: true,
   revealHeaderOnHover: true,
   revealMetaOnHover: true,
+  sideRevealMode: 'drawer',
+  drawerImplementation: 'custom',
   sideHoverPosition: 'right',
+  drawerGlassEffect: true,
   shortcutEnabled: true
 };
 
