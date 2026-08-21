@@ -2,6 +2,8 @@
 
 Chrome MV3 extension for YouTube watch pages.
 
+![YouTube Zen Theater in action](https://raw.githubusercontent.com/Shuuren/Shuuren/main/assets/youtube-zen-theater.jpg)
+
 - Clicks YouTube's native live-chat close/hide button instead of removing chat with CSS.
 - Forces YouTube's native theater mode by setting the `wide=1` cookie and clicking the theater button when needed.
 - Hides YouTube's masthead/navigation on watch pages.
