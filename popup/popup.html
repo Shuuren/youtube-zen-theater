@@ -43,7 +43,7 @@
         </fieldset>
 
         <fieldset class="group">
-          <legend>Hide</legend>
+          <legend>Content</legend>
           <label class="row">
             <span>
               <strong>Live chat</strong>
@@ -89,6 +89,14 @@
 
           <label class="row">
             <span>
+              <strong>Playlist</strong>
+              <small>Show queue and playlist panel</small>
+            </span>
+            <input type="checkbox" id="revealPlaylistOnHover">
+          </label>
+
+          <label class="row">
+            <span>
               <strong>Open style</strong>
               <small>Choose hover edge or drawer button</small>
             </span>
@@ -98,16 +106,51 @@
             </select>
           </label>
 
-          <label class="row">
-            <span>
-              <strong>Side</strong>
-              <small>Choose the reveal edge</small>
-            </span>
-            <select id="sideHoverPosition">
-              <option value="right">Right</option>
-              <option value="left">Left</option>
-            </select>
-          </label>
+          <details class="advanced">
+            <summary>Advanced reveal tuning</summary>
+            <div class="advanced-grid">
+              <label class="row compact-row">
+                <span>
+                  <strong>Panel sides</strong>
+                  <small>Use one edge or both edges</small>
+                </span>
+                <select id="revealSideLayout">
+                  <option value="separate">Separate</option>
+                  <option value="same">Same side</option>
+                </select>
+              </label>
+
+              <label class="row compact-row">
+                <span>
+                  <strong data-side-position-title>Details side</strong>
+                  <small data-side-position-help>Playlist uses the opposite side</small>
+                </span>
+                <select id="sideHoverPosition">
+                  <option value="right">Right</option>
+                  <option value="left">Left</option>
+                </select>
+              </label>
+
+              <label class="row compact-row same-side-setting" data-same-side-only>
+                <span>
+                  <strong>Same-side split</strong>
+                  <small>Choose the top hover half</small>
+                </span>
+                <select id="sameSideSplit">
+                  <option value="playlist-top">Playlist top</option>
+                  <option value="details-top">Details top</option>
+                </select>
+              </label>
+
+              <label class="row compact-row range-row">
+                <span>
+                  <strong>Hover delay</strong>
+                  <small><output data-range-value="hoverRevealDelay">140ms</output></small>
+                </span>
+                <input type="range" id="hoverRevealDelay" min="0" max="1000" step="20">
+              </label>
+            </div>
+          </details>
         </fieldset>
 
         <fieldset class="group">

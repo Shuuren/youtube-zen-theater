@@ -7,7 +7,7 @@ html {
 }
 
 body {
-  width: 344px;
+  width: 372px;
   margin: 0;
   background: #0a0a0a;
   color: #f7f7f7;
@@ -67,7 +67,7 @@ p {
 
 .settings {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .group {
@@ -77,6 +77,28 @@ p {
   margin: 0;
   padding: 0;
   border: 0;
+}
+
+.advanced {
+  overflow: hidden;
+  border: 1px solid #252525;
+  border-radius: 8px;
+  background: #101010;
+}
+
+.advanced summary {
+  min-height: 42px;
+  padding: 11px;
+  color: #e8e8e8;
+  font-weight: 650;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.advanced-grid {
+  display: grid;
+  gap: 7px;
+  padding: 0 7px 7px;
 }
 
 legend {
@@ -99,6 +121,16 @@ legend {
   border: 1px solid #252525;
   border-radius: 8px;
   background: #111;
+}
+
+.compact-row {
+  min-height: 44px;
+  padding: 8px 10px;
+  background: #151515;
+}
+
+.compact-row[hidden] {
+  display: none;
 }
 
 strong,
@@ -168,7 +200,17 @@ select {
   cursor: pointer;
 }
 
+input[type="range"] {
+  width: 132px;
+  accent-color: #ff304f;
+  cursor: pointer;
+}
+
 select:focus-visible {
   outline: 2px solid #f7f7f7;
   outline-offset: 2px;
+}
+
+.range-row {
+  align-items: start;
 }
