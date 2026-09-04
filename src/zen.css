@@ -80,10 +80,6 @@ html.ytzt-watch-page.ytzt-hide-recommendations ytd-watch-flexy[theater] ytd-watc
   display: none !important;
 }
 
-html.ytzt-watch-page.ytzt-hide-recommendations.ytzt-reveal-playlist-enabled ytd-watch-flexy[theater] #secondary:has(ytd-playlist-panel-renderer) {
-  display: block !important;
-}
-
 html.ytzt-watch-page ytd-watch-flexy[theater] #player-theater-container,
 html.ytzt-watch-page ytd-watch-flexy[theater] #full-bleed-container,
 html.ytzt-watch-page ytd-watch-flexy[theater] #player-full-bleed-container,
@@ -827,7 +823,7 @@ html.ytzt-watch-page.ytzt-drawer-custom.ytzt-reveal-playlist-enabled ytd-watch-f
   bottom: auto !important;
   z-index: 2147483639 !important;
   box-sizing: border-box !important;
-  display: block !important;
+  display: none !important;
   width: min(440px, calc(100vw - 56px)) !important;
   max-width: min(440px, calc(100vw - 56px)) !important;
   height: min(820px, calc(100dvh - 64px)) !important;
@@ -976,6 +972,7 @@ html.ytzt-watch-page.ytzt-drawer-custom.ytzt-reveal-playlist-enabled.ytzt-reveal
 html.ytzt-watch-page.ytzt-drawer-custom.ytzt-reveal-playlist-enabled.ytzt-reveal-playlist-drawer ytd-watch-flexy[theater] #secondary,
 html.ytzt-watch-page.ytzt-drawer-custom.ytzt-side-mode-hover.ytzt-reveal-playlist-enabled ytd-watch-flexy[theater] #secondary:hover,
 html.ytzt-watch-page.ytzt-drawer-custom.ytzt-side-mode-hover.ytzt-reveal-playlist-enabled ytd-watch-flexy[theater] #secondary:focus-within {
+  display: block !important;
   opacity: 1 !important;
   pointer-events: auto !important;
   transform: translateX(0) translateY(-50%) scale(1) !important;

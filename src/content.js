@@ -11,9 +11,6 @@ const DEFAULT_SETTINGS = {
   revealSideLayout: 'separate',
   sideHoverPosition: 'right',
   sameSideSplit: 'playlist-top',
-  playlistHoverPosition: 'left',
-  metaHoverZone: 'bottom',
-  playlistHoverZone: 'top',
   hoverRevealDelay: 140,
   drawerGlassEffect: true,
   shortcutEnabled: true
@@ -54,6 +51,7 @@ let observer = null;
 let observerTimer = 0;
 let chatClickCount = 0;
 let liveChatCloseResolved = false;
+let liveChatOpenObserved = false;
 let wideCookieWritten = false;
 let zenEnabled = DEFAULT_SETTINGS.autoZen;
 let headerHoverZone = null;
@@ -64,6 +62,7 @@ let playlistDrawerButton = null;
 let lastShortcutAt = 0;
 let hoverRevealTimer = 0;
 let pendingHoverClass = '';
+let playlistOpenRequested = false;
 
 bootWhenDocumentReady();
 
@@ -152,6 +151,9 @@ function bindFrameEvents() {
     normalizeRevealSettings();
 
     if (settings.hideLiveChat) {
+      chatClickCount = 0;
+      liveChatCloseResolved = false;
+      liveChatOpenObserved = false;
       scheduleFrameChatClose(100);
     }
   });
@@ -214,6 +216,12 @@ function bindEvents() {
       zenEnabled = true;
     }
 
+    if (changes.hideLiveChat) {
+      chatClickCount = 0;
+      liveChatCloseResolved = false;
+      liveChatOpenObserved = false;
+    }
+
     scheduleApply(0);
   });
 }
@@ -250,10 +258,11 @@ function applyZen() {
   const shouldRevealMeta = active && settings.revealMetaOnHover;
   const metaSide = getMetaRevealSide();
   const playlistSide = getPlaylistRevealSide();
-  if (active && settings.revealPlaylistOnHover) {
+  const canRevealPlaylist = active && settings.revealPlaylistOnHover && drawerIsCustom;
+  if (canRevealPlaylist) {
     ensurePlaylistPanelOpen();
   }
-  const hasPlaylist = active && settings.revealPlaylistOnHover && hasPlaylistPanel();
+  const hasPlaylist = canRevealPlaylist && hasPlaylistPanel();
 
   document.documentElement.classList.toggle('ytzt-watch-page', active);
   document.documentElement.classList.toggle('ytzt-hide-header', active && settings.hideHeader);
@@ -276,6 +285,7 @@ function applyZen() {
   if (!active) {
     chatClickCount = 0;
     liveChatCloseResolved = false;
+    liveChatOpenObserved = false;
     clearHoverRevealTimer();
     document.documentElement.classList.remove('ytzt-reveal-header', 'ytzt-reveal-meta', ...META_REVEAL_CLASSES, ...PLAYLIST_REVEAL_CLASSES);
     return;
@@ -338,7 +348,7 @@ function syncHoverZones(active) {
   const wantsHeaderZone = active && settings.hideHeader && settings.revealHeaderOnHover;
   const wantsMetaZone = active && settings.revealMetaOnHover && settings.sideRevealMode === 'hover';
   const wantsMetaDrawerButton = active && settings.revealMetaOnHover && settings.sideRevealMode !== 'hover';
-  const wantsPlaylist = active && settings.revealPlaylistOnHover && hasPlaylistPanel();
+  const wantsPlaylist = active && settings.revealPlaylistOnHover && settings.drawerImplementation !== 'native' && hasPlaylistPanel();
   const playlistUsesCustomDrawer = settings.drawerImplementation !== 'native';
   const wantsPlaylistZone = wantsPlaylist && playlistUsesCustomDrawer && settings.sideRevealMode === 'hover';
   const wantsPlaylistDrawerButton = wantsPlaylist && playlistUsesCustomDrawer && settings.sideRevealMode !== 'hover';
@@ -497,6 +507,10 @@ function clearPlaylistReveal() {
 
 function resetWatchSurfaceState() {
   clearHoverRevealTimer();
+  playlistOpenRequested = false;
+  liveChatOpenObserved = false;
+  chatClickCount = 0;
+  liveChatCloseResolved = false;
   document.documentElement.classList.remove('ytzt-reveal-meta', ...META_REVEAL_CLASSES, ...PLAYLIST_REVEAL_CLASSES);
   for (const selector of ['ytd-watch-flexy[theater] #below', 'ytd-watch-flexy[theater] #secondary']) {
     const element = document.querySelector(selector);
@@ -529,7 +543,7 @@ function handleHoverReveal(event) {
   const isInsidePlaylistDrawer = Boolean(targetElement?.closest('ytd-watch-flexy[theater] #secondary'));
   const canRevealHeader = settings.hideHeader && settings.revealHeaderOnHover;
   const canRevealMeta = settings.revealMetaOnHover && settings.sideRevealMode === 'hover';
-  const canRevealPlaylist = settings.revealPlaylistOnHover && settings.sideRevealMode === 'hover' && hasPlaylistPanel();
+  const canRevealPlaylist = settings.revealPlaylistOnHover && settings.drawerImplementation !== 'native' && settings.sideRevealMode === 'hover' && hasPlaylistPanel();
   const headerOpen = document.documentElement.classList.contains('ytzt-reveal-header');
   const metaOpen = isMetaRevealed();
   const playlistOpen = isPlaylistRevealed();
@@ -686,7 +700,17 @@ function getPlaylistScrollContainers() {
 }
 
 function ensurePlaylistPanelOpen() {
-  if (!hasPlaylistContext() || hasPlaylistPanel()) {
+  if (!hasPlaylistContext()) {
+    playlistOpenRequested = false;
+    return;
+  }
+
+  if (hasPlaylistPanel()) {
+    playlistOpenRequested = false;
+    return;
+  }
+
+  if (playlistOpenRequested) {
     return;
   }
 
@@ -696,6 +720,7 @@ function ensurePlaylistPanelOpen() {
     return;
   }
 
+  playlistOpenRequested = true;
   toggle.click();
   scheduleApply(250);
   scheduleApply(900);
@@ -707,18 +732,29 @@ function hasPlaylistContext() {
 }
 
 function hideLiveChatByClick() {
-  if (liveChatCloseResolved) {
+  const chatFrame = document.querySelector('ytd-live-chat-frame#chat, ytd-live-chat-frame');
+  if (!chatFrame) {
+    if (liveChatOpenObserved) {
+      liveChatCloseResolved = true;
+    }
     return;
   }
 
-  const chatFrame = document.querySelector('ytd-live-chat-frame#chat, ytd-live-chat-frame');
-  if (!chatFrame || chatFrame.hasAttribute('collapsed') || chatFrame.collapsed === true) {
-    liveChatCloseResolved = Boolean(chatFrame);
+  const chatCollapsed = chatFrame.hasAttribute('collapsed') || chatFrame.collapsed === true;
+  if (chatCollapsed) {
+    if (liveChatOpenObserved || chatClickCount > 0) {
+      liveChatCloseResolved = true;
+    }
     return;
+  }
+
+  liveChatOpenObserved = true;
+  if (liveChatCloseResolved) {
+    liveChatCloseResolved = false;
+    chatClickCount = 0;
   }
 
   if (chatClickCount > 12) {
-    liveChatCloseResolved = true;
     return;
   }
 
