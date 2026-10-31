@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "YouTube Zen Theater",
   "version": "1.0.0",
-  "description": "Hides YouTube live chat with native controls and makes watch pages open in a viewport-filling zen theater layout.",
+  "description": "Opens watch pages in a zen theater layout and hides YouTube distractions such as the home feed, end screens, recommendations, live chat, and offers.",
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
@@ -16,13 +16,26 @@
         "https://youtube.com/*"
       ],
       "js": [
+        "src/native-panels.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://youtube.com/*"
+      ],
+      "js": [
+        "src/settings.js",
         "src/content.js"
       ],
       "css": [
         "src/zen.css"
       ],
       "run_at": "document_start",
-      "all_frames": true
+      "all_frames": false
     }
   ],
   "action": {

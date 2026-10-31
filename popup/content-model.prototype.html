@@ -1,0 +1,456 @@
+<!doctype html>
+<!-- Disposable content-model prototype. Open directly. No extension APIs or persistence.
+     The prototype changes the configuration model, not the installed extension. -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>YouTube Zen content model</title><style>@view-transition {
+  navigation: auto;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  width: 372px;
+  margin: 0;
+  background: #0a0a0a;
+  color: #f7f7f7;
+  font: 13px/1.4 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.panel {
+  padding: 14px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 2px 14px;
+}
+
+.mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #2d2d2d;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #181818, #080808);
+}
+
+.mark svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: #f7f7f7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.mark path:nth-of-type(1) {
+  fill: #ff304f;
+  stroke: #ff304f;
+}
+
+h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+p {
+  margin: 2px 0 0;
+  color: #a3a3a3;
+  font-size: 12px;
+}
+
+.settings {
+  display: grid;
+  gap: 14px;
+}
+
+.group {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.advanced {
+  overflow: visible;
+  border: 1px solid #252525;
+  border-radius: 8px;
+  background: #101010;
+}
+
+.advanced summary {
+  min-height: 42px;
+  padding: 11px;
+  color: #e8e8e8;
+  font-weight: 650;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.advanced-grid {
+  display: grid;
+  gap: 7px;
+  padding: 0 7px 7px;
+}
+
+legend {
+  margin: 0 0 1px;
+  padding: 0 2px;
+  color: #d6d6d6;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 50px;
+  padding: 9px 11px;
+  border: 1px solid #252525;
+  border-radius: 8px;
+  background: #111;
+}
+
+.compact-row {
+  min-height: 44px;
+  padding: 8px 10px;
+  background: #151515;
+}
+
+.compact-row[hidden] {
+  display: none;
+}
+
+strong,
+small {
+  display: block;
+}
+
+strong {
+  font-size: 13px;
+  font-weight: 650;
+}
+
+small {
+  margin-top: 2px;
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+input[type="checkbox"] {
+  position: relative;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 22px;
+  appearance: none;
+  border: 1px solid #343434;
+  border-radius: 999px;
+  background: #1c1c1c;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease;
+}
+
+input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fafafa;
+  transition: transform 140ms ease;
+}
+
+input[type="checkbox"]:checked {
+  border-color: #ff304f;
+  background: #ff304f;
+}
+
+input[type="checkbox"]:checked::after {
+  transform: translateX(16px);
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: 2px solid #f7f7f7;
+  outline-offset: 2px;
+}
+
+select {
+  min-width: 88px;
+  height: 32px;
+  padding: 0 28px 0 10px;
+  border: 1px solid #343434;
+  border-radius: 8px;
+  background: #1c1c1c;
+  color: #f7f7f7;
+  font: inherit;
+  cursor: pointer;
+}
+
+input[type="range"] {
+  width: 132px;
+  accent-color: #ff304f;
+  cursor: pointer;
+}
+
+select:focus-visible {
+  outline: 2px solid #f7f7f7;
+  outline-offset: 2px;
+}
+
+.range-row {
+  align-items: start;
+}
+
+
+/* Category navigation reuses the popup's original colors and controls. */
+.tabs {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #252525;
+}
+
+.tabs button {
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: #a3a3a3;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tabs button[aria-selected="true"] {
+  border-bottom-color: #ff304f;
+  color: #f7f7f7;
+}
+
+.tabs button:hover {
+  color: #f7f7f7;
+}
+
+.tabs button:active {
+  transform: translateY(1px);
+}
+
+.tabs button:focus-visible,
+input[type="range"]:focus-visible {
+  outline: 2px solid #f7f7f7;
+  outline-offset: 2px;
+}
+
+.settings {
+  align-content: start;
+  gap: 7px;
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.row span {
+  min-width: 0;
+}
+
+select {
+  max-width: 155px;
+}
+
+.explanation,
+.hint {
+  margin: 0 2px;
+  color: #a3a3a3;
+  font-size: 11px;
+}
+
+.status {
+  min-height: 18px;
+  margin: 14px 2px 0;
+  color: #a3a3a3;
+  font-size: 11px;
+}
+
+.status[data-state="error"] {
+  color: #ffb3bd;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  input[type="checkbox"],
+  input[type="checkbox"]::after {
+    transition: none;
+  }
+}
+
+:root{--popup-bg:#0a0a0a;--surface:#111;--raised:#1c1c1c;--stroke:#252525;--ink:#f7f7f7;--quiet:#a3a3a3;--red:#ff304f}
+body{width:auto;background:transparent;margin:0}.study{display:grid;gap:20px;align-content:start;color:var(--foreground,var(--ink));padding:4px 0 16px;min-width:0}.intro{display:grid;gap:5px;max-width:65ch}.intro h1{font-size:18px}.intro p{color:var(--muted-foreground,var(--quiet));font-size:12px;margin:0}.workspace{display:grid;grid-template-columns:minmax(0,372px) minmax(0,1fr);align-items:start;gap:18px;min-width:0}.workspace>*{min-width:0}.mock-popup{background:var(--popup-bg);color:var(--ink);border-radius:12px;overflow:hidden}.settings{gap:16px;max-height:422px;scrollbar-gutter:stable}.group{gap:7px}.group legend{margin-bottom:7px}.row{box-sizing:border-box;min-height:48px;padding:9px 10px}.row select{flex-shrink:0;max-width:150px;font-size:12px;min-height:32px}.child-row{min-height:44px;padding:7px 10px;background:#151515}.child-row strong{font-size:12px;font-weight:500}.panel-note{font-size:11px;color:var(--quiet);margin:0 2px;text-wrap:pretty}.inline-pair{display:grid;grid-template-columns:1fr 1fr;gap:7px}.inline-pair .row{gap:8px;min-height:48px}.inline-pair strong{font-size:12px}.status{font-size:10px}.tabs{gap:18px}.preview{color:var(--ink);background:var(--surface);border:1px solid var(--stroke);border-radius:12px;padding:16px;display:grid;gap:12px;min-width:0}.preview-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.preview-head h2{font-size:13px;margin:0;font-weight:650}.preview-head small{font-size:10px;margin:0}.demo-actions{display:flex;gap:6px}.demo-button{min-height:36px;border:1px solid #343434;border-radius:7px;padding:6px 9px;background:var(--raised);color:var(--ink);font:inherit;font-size:11px;cursor:pointer}.demo-button:hover{background:color-mix(in oklch,var(--raised) 90%,white)}button:active{transform:translateY(1px)}button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}.watch-shell{position:relative;border:1px solid #343434;border-radius:8px;overflow:hidden;background:#0f0f0f}.watch-viewport{height:300px;overflow:auto;scrollbar-width:thin;position:relative;overscroll-behavior:contain}.watch-viewport.card-mode{overflow:hidden}.watch-content{position:relative}.top-bar{height:34px;background:#181818;display:flex;align-items:center;gap:9px;padding:0 10px;font-size:10px;border-bottom:1px solid var(--stroke);box-sizing:border-box}.top-bar.floating{position:absolute;top:0;left:0;right:0;z-index:4}.top-bar b{font-size:11px}.search-shape{height:14px;flex:1;border:1px solid #343434;border-radius:10px}.video-scene{height:300px;position:relative;display:grid;place-items:center;overflow:hidden;background:#151a24}.video-scene.native{height:auto;aspect-ratio:16/9}.video-art{position:absolute;inset:0;background:radial-gradient(ellipse at 72% 20%,#42466d 0,transparent 55%),linear-gradient(145deg,#23283e,#121620)}.video-art:before{content:'';position:absolute;width:75%;height:55%;background:#303753;border-radius:50%;left:-20%;bottom:-18%;transform:rotate(-15deg)}.play-mark{font-size:28px;color:#fff;position:relative;text-shadow:0 2px 8px #0005}.video-caption{position:absolute;top:12px;left:12px;color:#b9becd;font-size:10px}.player-controls{position:absolute;bottom:0;left:0;right:0;padding:18px 10px 8px;background:linear-gradient(transparent,#000b);display:flex;align-items:center;gap:8px;font-size:10px}.seek{height:2px;background:#777;position:absolute;left:10px;right:10px;top:12px}.seek:before{content:'';display:block;width:28%;height:2px;background:var(--red)}.native-columns{display:grid;grid-template-columns:minmax(0,1fr) 32%;gap:10px;padding:12px 10px}.native-details h3{font-size:11px;margin:0 0 7px;line-height:1.4}.channel{display:flex;gap:6px;align-items:center;font-size:10px;margin-bottom:8px}.avatar{width:19px;height:19px;border-radius:50%;background:#4a4a4a;flex-shrink:0}.native-actions{font-size:9px;color:#d5d5d5;padding:5px 0;border-top:1px solid var(--stroke);border-bottom:1px solid var(--stroke)}.description{font-size:9px;line-height:1.6;color:#bbb;margin:8px 0 12px}.comments{display:grid;gap:12px}.comments h4{font-size:10px;margin:0}.comment{font-size:9px;color:#c7c7c7;line-height:1.5}.comment b{display:block;color:#f1f1f1;font-size:9px;margin-bottom:3px}.queue,.recommendations,.chat{display:grid;gap:6px;margin-bottom:12px}.queue h4,.recommendations h4,.chat h4{font-size:9px;margin:0;color:#c7c7c7}.queue-item{background:#252525;padding:6px;border-radius:3px;font-size:9px;line-height:1.4}.queue-item.selected{box-shadow:inset 2px 0 var(--red)}.recommendation{height:33px;background:#242424;border-radius:3px}.chat p{font-size:9px;color:#bbb;margin:0}.overlay-layer{position:absolute;inset:0;pointer-events:none}.edge-control{pointer-events:auto;position:absolute;top:40%;width:24px;min-height:44px;padding:0;border:1px solid #444;background:#1c1c1ce8;color:#fff;font-size:16px;cursor:pointer;z-index:3}.edge-control.left{left:0;border-radius:0 6px 6px 0}.edge-control.right{right:0;border-radius:6px 0 0 6px}.edge-control.bottom-half{top:62%}.edge-control.top-half{top:25%}.side-card{pointer-events:auto;position:absolute;top:12px;bottom:12px;width:min(208px,80%);padding:11px;box-sizing:border-box;background:#111;overflow:auto;border:1px solid #444;border-radius:10px;overscroll-behavior:contain;scrollbar-width:thin;z-index:2}.side-card.shadow{box-shadow:0 3px 6px #0003,0 9px 18px #0003,0 18px 38px #0005}.side-card.left{left:8px}.side-card.right{right:8px}.side-card.youtube{background:#1b1b1b;border-radius:3px}.card-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.card-heading strong{font-size:11px}.close-card{width:28px;min-height:28px;border:0;border-radius:5px;background:#2a2a2a;color:#eee;cursor:pointer;font-size:15px}.preview-summary{display:grid;gap:6px;padding-top:3px}.preview-summary p{font-size:11px;color:var(--quiet);margin:0;line-height:1.5}.preview-summary b{color:#ddd;font-weight:500}.feedback{font-size:11px;color:#d6d6d6;line-height:1.5;min-height:32px;border-top:1px solid var(--stroke);padding-top:10px}.prototype-state{color:var(--muted-foreground,var(--quiet));font-size:11px}.prototype-state summary{cursor:pointer;min-height:30px}.prototype-state pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:12px;border-radius:8px;background:var(--code-background,#111);color:var(--code-foreground,var(--ink));font-size:11px}.preview-note{font-size:10px;color:var(--quiet);margin:0}.group .divider{height:1px;background:var(--stroke);margin:5px 0}@media(max-width:650px){.workspace{grid-template-columns:minmax(0,1fr)}.mock-popup{width:min(372px,100%);justify-self:center}.preview{width:min(440px,100%);justify-self:center;box-sizing:border-box}.watch-viewport{height:300px}.video-scene{height:300px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+.card-mode .native-columns{position:absolute;top:40px;right:0;bottom:0;width:32%;box-sizing:border-box;grid-template-columns:minmax(0,1fr);padding:8px;overflow:auto;background:#111e}.card-mode .native-columns>div:first-child{display:none}
+
+.workspace{grid-template-columns:minmax(0,372px);justify-content:center}.mock-popup{width:100%}.preview{padding:10px;gap:8px;margin:0 0 14px;background:#111;border-radius:8px}.preview-head h2{font-size:11px}.preview-head .demo-button{min-height:28px;font-size:10px;padding:3px 7px}.watch-viewport,.video-scene{height:112px}.preview.expanded .watch-viewport,.preview.expanded .video-scene{height:260px}.demo-actions{order:2}.demo-actions .demo-button{min-height:28px;font-size:10px;padding:3px 7px}.preview-summary{padding:0;gap:2px}.preview-summary p{font-size:10px}.feedback{font-size:10px;min-height:0;padding-top:6px;margin:0}.preview-note{font-size:10px}.side-card{top:6px;bottom:6px;padding:8px;width:min(208px,75%)}.card-heading{margin-bottom:8px}.edge-control{width:auto;max-width:80px;font-size:10px;padding:5px;min-height:28px;top:40%}.edge-control.top-half{top:14%}.edge-control.bottom-half{top:65%}.video-caption{top:8px;left:8px;font-size:9px}.play-mark{font-size:21px}.settings{max-height:360px}.preview.expanded .side-card{top:10px;bottom:10px}.card-mode .native-columns{top:26px}.prototype-state{justify-self:center;width:min(372px,100%)}
+.preview-tools{display:flex;gap:5px}.preview:not(.expanded) .demo-actions,.preview:not(.expanded) .preview-note,.preview:not(.expanded) .feedback{display:none}.settings{max-height:240px}.preview{gap:7px}.preview-summary p{line-height:1.4}
+.demo-button:disabled{color:#999;background:#151515;cursor:default}.mock-popup:has(.preview.expanded) .settings{max-height:92px}
+.preview .demo-actions,.preview .preview-note,.preview .feedback{display:none}
+.settings{max-height:197px}.mock-popup:has(.preview.expanded) .settings{max-height:49px}
+</style></head><body>
+<main class="study"><header class="intro"><h1>A preview inside the popup</h1><p>Try the layout as you change settings. Expand it for more room.</p><p>Interactive prototype. Original visual style. Nothing is saved.</p></header><div class="workspace"><article class="mock-popup"><div class="panel"><header class="header">
+        <div class="mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" role="img">
+            <rect x="3" y="5" width="26" height="18" rx="3"></rect>
+            <path d="M14 11l8 4-8 5z"></path>
+            <path d="M7 27h18"></path>
+          </svg>
+        </div>
+        <div>
+          <h1>YouTube Zen</h1>
+          <p>Fullscreen theater controls</p>
+        </div>
+      </header><section class="preview" aria-label="Interactive watch-page preview"><header class="preview-head"><h2>Try your layout</h2><div class="preview-tools"><button class="demo-button" id="scroll-demo">Scroll ↓</button><button class="demo-button" id="expand-preview" aria-expanded="false">Expand</button></div></header><div class="demo-actions"><button class="demo-button" id="reset-demo">Reset preview</button></div><div class="watch-shell"><div class="watch-viewport" id="watch-viewport"><div class="watch-content" id="watch-content"></div></div><div class="overlay-layer" id="overlay"></div></div><div class="preview-summary" id="preview-summary"></div><p class="feedback" id="feedback" role="status" aria-live="polite">Scroll down to see the details below the video.</p><p class="preview-note">Scroll the video or try a card’s edge button. Hover works when enabled.</p></section><nav class="tabs" role="tablist" aria-label="Settings categories" id="tabs"></nav><section class="settings" role="tabpanel" id="settings"></section><p class="status">Prototype · changes stay on this page</p></div></article></div><details class="prototype-state"><summary>Inspect the configuration model</summary><pre id="model"></pre></details></main>
+<script>
+const model={autoZen:true,shortcut:true,details:{location:'page',side:'right',opens:'scroll'},playlist:{location:'page',side:'left',opens:'button'},distractions:{header:true,topHover:true,recommendations:true,chat:true},appearance:{surface:'zen',shadow:true},hoverDelay:140,sharedHoverTop:'playlist'};
+const ui={zen:true,tab:'general',open:null,pinned:false,header:false,expanded:false,hoverTimer:0,hoverTarget:null};
+const categories={general:'General',distractions:'Distractions',appearance:'Appearance'};
+function valueAt(path){return path.split('.').reduce((v,k)=>v[k],model);}
+function setValue(path,value){const keys=path.split('.'),key=keys.pop();keys.reduce((v,k)=>v[k],model)[key]=value;}
+function select(path,title,options,help='',child=false){const id='field-'+path.replaceAll('.','-');return `<label class="row ${child?'child-row':''}" for="${id}"><span><strong>${title}</strong>${help?`<small>${help}</small>`:''}</span><select id="${id}" data-path="${path}">${options.map(([v,label])=>`<option value="${v}" ${valueAt(path)===v?'selected':''}>${label}</option>`).join('')}</select></label>`;}
+function toggle(path,title,help=''){const id='field-'+path.replaceAll('.','-');return `<label class="row" for="${id}"><span><strong>${title}</strong>${help?`<small>${help}</small>`:''}</span><input type="checkbox" id="${id}" data-path="${path}" ${valueAt(path)?'checked':''}></label>`;}
+function hasHover(config){return config.location==='card'&&config.opens.includes('hover');}
+function sharedHover(){return hasHover(model.details)&&hasHover(model.playlist)&&model.details.side===model.playlist.side;}
+function group(title,content){return `<fieldset class="group"><legend>${title}</legend>${content}</fieldset>`;}
+function contentSettings(name){
+ const config=model[name],details=name==='details';
+ const locations=details?[['page','Below video'],['card','Side card']]:[['page','On page'],['card','Side card'],['hidden','Hidden']];
+ let html=select(name+'.location','Location',locations);
+ if(config.location==='card'){
+  html+=select(name+'.side','Side',[['left','Left'],['right','Right']],'',true);
+  const triggers=details?[['scroll','Scroll'],['button','Button'],['hover','Hover'],['scroll-hover','Scroll + hover']]:[['button','Button'],['hover','Hover']];
+  html+=select(name+'.opens','Open with',triggers,'',true)+'<p class="panel-note">The edge button is always available.</p>';
+ }else html+=`<p class="panel-note">${details?'Scroll down to read the channel, actions, and comments.':config.location==='page'?'The native queue stays in the page sidebar.':'The queue is hidden. Its card preferences are kept.'}</p>`;
+ return group(details?'Video details':'Playlist',html);
+}
+function generalSettings(){
+ let html=contentSettings('details')+contentSettings('playlist');
+ if(hasHover(model.details)||hasHover(model.playlist)){
+  let hover=`<label class="row" for="field-hoverDelay"><span><strong>Hover delay</strong><small id="hover-value">${model.hoverDelay}ms</small></span><input id="field-hoverDelay" data-path="hoverDelay" type="range" min="0" max="1000" step="20" value="${model.hoverDelay}"></label>`;
+  if(sharedHover())hover+=select('sharedHoverTop','Top edge region',[['details','Video details'],['playlist','Playlist']],'Both hover panels use the '+model.details.side+' edge.');
+  html+=group('Hover behavior',hover);
+ }
+ html+=group('Playback',`<div class="inline-pair">${toggle('autoZen','Auto Zen')}${toggle('shortcut','T shortcut')}</div>`);
+ return html;
+}
+function distractionSettings(){return group('Navigation',toggle('distractions.header','Hide top bar')+toggle('distractions.topHover','Reveal on top hover','Used while the top bar is hidden'))+group('Other content',toggle('distractions.recommendations','Hide recommendations','Keep their sidebar space empty')+toggle('distractions.chat','Close live chat'));}
+function appearanceSettings(){return group('Card styling',select('appearance.surface','Surface',[['zen','Zen'],['youtube','YouTube']])+toggle('appearance.shadow','Shadow'))+'<p class="panel-note">These choices change card styling only. Details and playlist locations stay as you set them.</p>';}
+function renderSettings(focusPath){
+ const panel=document.getElementById('settings'),scroll=panel.scrollTop;
+ document.getElementById('tabs').innerHTML=Object.entries(categories).map(([key,label])=>`<button type="button" role="tab" id="tab-${key}" data-tab="${key}" aria-controls="settings" aria-selected="${ui.tab===key}" tabindex="${ui.tab===key?0:-1}">${label}</button>`).join('');
+ panel.setAttribute('aria-labelledby','tab-'+ui.tab);panel.innerHTML={general:generalSettings,distractions:distractionSettings,appearance:appearanceSettings}[ui.tab]();
+ panel.scrollTop=focusPath?scroll:0;
+ if(focusPath)document.querySelector(`[data-path="${focusPath}"]`)?.focus({preventScroll:true});
+ document.getElementById('model').textContent=JSON.stringify(model,null,2);
+}
+function detailsMarkup(){return '<div class="native-details"><h3>A quieter way to watch</h3><div class="channel"><span class="avatar"></span><span>Sample channel</span></div><div class="native-actions">Like · Share · Save</div><p class="description">Video description and links stay with the video details.</p><div class="comments"><h4>Comments</h4>'+Array.from({length:7},(_,i)=>`<div class="comment"><b>Viewer ${i+1}</b>Sample comment ${i+1}. Scroll to read the conversation.</div>`).join('')+'</div></div>';}
+function queueMarkup(){return '<div class="queue"><h4>Playlist · 3 videos</h4><div class="queue-item selected">1 · Current video</div><div class="queue-item">2 · Next video</div><div class="queue-item">3 · Another video</div></div>';}
+function zenActive(){return ui.zen;}
+function visibleLocation(name){return zenActive()?model[name].location:'page';}
+function renderWatch(){
+ const viewport=document.getElementById('watch-viewport'),scroll=viewport.scrollTop,zen=zenActive();
+ const headerVisible=!zen||!model.distractions.header||ui.header;
+ const recsVisible=!zen||!model.distractions.recommendations,chatVisible=!zen||!model.distractions.chat;
+ viewport.classList.toggle('card-mode',zen&&model.details.location==='card');
+ document.getElementById('watch-content').innerHTML=(headerVisible?'<div class="top-bar'+(zen&&model.distractions.header?' floating':'')+'"><b>YouTube</b><span class="search-shape"></span><span>◯</span></div>':'')+`<div class="video-scene ${zen?'':'native'}" id="demo-video"><div class="video-art"></div><span class="video-caption">${zen?'Zen viewing':'Native page'}</span><span class="play-mark">▶</span><div class="player-controls"><span class="seek"></span>▶ &nbsp; ◖ &nbsp; 0:07 / 12:14</div></div>`+`<div class="native-columns"><div>${visibleLocation('details')==='page'?detailsMarkup():''}</div><aside>${visibleLocation('playlist')==='page'?queueMarkup():''}${recsVisible?'<div class="recommendations"><h4>Recommendations</h4><div class="recommendation"></div><div class="recommendation"></div></div>':''}${chatVisible?'<div class="chat"><h4>Live chat</h4><p>Sample viewer message</p></div>':''}</aside></div>`;
+ viewport.scrollTop=scroll;
+ renderOverlay();renderSummary();
+}
+function triggerLabel(config){return {scroll:'scroll or button',button:'button',hover:'hover or button','scroll-hover':'scroll, hover, or button'}[config.opens];}
+function renderSummary(){
+ document.getElementById('preview-summary').innerHTML=(!zenActive()?'<p><b>Zen is off</b> · native page shown. Card preferences are kept.</p>':'')+['details','playlist'].map(name=>{const c=zenActive()?model[name]:{location:'page'},title=name==='details'?'Details':'Playlist';return `<p><b>${title}</b> · ${c.location==='page'?(name==='details'?'below the video':'on the page'):c.location==='hidden'?'hidden':c.side+' card · '+triggerLabel(c)}</p>`;}).join('')+(zenActive()&&sharedHover()?`<p>Shared ${model.details.side} edge. Top hover region opens ${model.sharedHoverTop==='details'?'details':'playlist'}.</p>`:'');
+}
+function renderOverlay(){
+ const scrollButton=document.getElementById('scroll-demo');scrollButton.disabled=zenActive()&&model.details.location==='card'&&!model.details.opens.includes('scroll');scrollButton.title=scrollButton.disabled?'Details use '+triggerLabel(model.details)+'.':'Try scrolling down';
+ const cards=['details','playlist'].filter(name=>visibleLocation(name)==='card');
+ const sameSide=cards.length===2&&model.details.side===model.playlist.side;
+ let html=cards.map(name=>{const c=model[name],top=sharedHover()?model.sharedHoverTop===name:name==='details';const region=sameSide?(top?'top-half':'bottom-half'):'';return `<button class="edge-control ${c.side} ${region}" data-open="${name}" aria-label="${ui.open===name&&ui.pinned?'Close':'Open'} ${name==='details'?'video details':'playlist'}" aria-expanded="${ui.open===name}">${name==='details'?'Details':'Playlist'} ${c.side==='left'?'›':'‹'}</button>`;}).join('');
+ if(ui.open&&cards.includes(ui.open)){const c=model[ui.open];html+=`<section class="side-card ${c.side} ${model.appearance.surface==='youtube'?'youtube':''} ${model.appearance.shadow?'shadow':''}" aria-label="${ui.open==='details'?'Video details':'Playlist'} card"><header class="card-heading"><strong>${ui.open==='details'?'Video details':'Playlist'}</strong><button class="close-card" data-close aria-label="Close card">×</button></header>${ui.open==='details'?detailsMarkup():queueMarkup()}</section>`;}
+ document.getElementById('overlay').innerHTML=html;
+}
+function feedback(text){document.getElementById('feedback').textContent=text;}
+function openCard(name,pinned=true){ui.open=name;ui.pinned=pinned;renderOverlay();feedback(`${name==='details'?'Video details':'Playlist'} opened on the ${model[name].side}. ${pinned?'Escape or the edge button closes it.':'Move away to close the hover preview.'}`);}
+function closeCard(){ui.open=null;ui.pinned=false;window.clearTimeout(ui.hoverTimer);ui.hoverTarget=null;renderOverlay();}
+function tryScroll(delta=150){
+ const viewport=document.getElementById('watch-viewport');
+ if(zenActive()&&model.details.location==='card'){
+  if(!model.details.opens.includes('scroll')){feedback('Details open with '+triggerLabel(model.details)+'. Use the edge control.');return;}
+  if(ui.open!=='details'){if(delta<=0)return;openCard('details');return;}
+  const card=document.querySelector('.side-card');if(card)card.scrollTop+=delta;
+  feedback('Scrolling the video scrolls the details card.');
+ }else{viewport.scrollTop+=delta;feedback('The video scrolls away. Details remain below it.');}
+}
+function changeSetting(input){
+ const path=input.dataset.path,value=input.type==='checkbox'?input.checked:input.type==='range'?Number(input.value):input.value;
+ setValue(path,value);if(path==='autoZen')ui.zen=value;window.clearTimeout(ui.hoverTimer);ui.hoverTarget=null;
+ const name=path.startsWith('details.')?'details':path.startsWith('playlist.')?'playlist':null;
+ if(!zenActive()||(ui.open&&model[ui.open].location!=='card')){ui.open=null;ui.pinned=false;}
+ if(path==='autoZen'||path==='details.location')document.getElementById('watch-viewport').scrollTop=0;
+ renderSettings(path);renderWatch();
+ if(name&&model[name].location==='card'&&zenActive())openCard(name);
+ else feedback('Preview updated. Other content keeps its location and preferences.');
+}
+function hoverPreview(event){
+ if(!zenActive())return;
+ const shell=document.querySelector('.watch-shell'),r=shell.getBoundingClientRect();
+ const x=event.clientX-r.left,y=event.clientY-r.top;
+ const header=model.distractions.header&&model.distractions.topHover&&y<(ui.header?40:10);
+ if(header!==ui.header){ui.header=header;renderWatch();}
+ if(ui.pinned)return;
+ if(event.target.closest('.edge-control')){window.clearTimeout(ui.hoverTimer);ui.hoverTarget=null;return;}
+ const overCard=event.target.closest('.side-card');if(overCard)return;
+ let candidates=['details','playlist'].filter(name=>hasHover(model[name])&&(model[name].side==='left'?x<18:x>r.width-18));
+ if(candidates.length===2){const top=y<r.height/2;candidates=[top?model.sharedHoverTop:(model.sharedHoverTop==='details'?'playlist':'details')];}
+ const next=candidates[0]||null;
+ if(next===ui.hoverTarget)return;
+ window.clearTimeout(ui.hoverTimer);ui.hoverTarget=next;
+ if(next){ui.hoverTimer=window.setTimeout(()=>{if(ui.hoverTarget===next&&!ui.pinned)openCard(next,false);},model.hoverDelay);}
+ else if(ui.open)closeCard();
+}
+function bindEvents(){
+ document.addEventListener('change',event=>{if(event.target.dataset.path)changeSetting(event.target);});
+ document.addEventListener('input',event=>{if(event.target.type==='range'){setValue('hoverDelay',Number(event.target.value));document.getElementById('hover-value').textContent=event.target.value+'ms';document.getElementById('model').textContent=JSON.stringify(model,null,2);}});
+ document.addEventListener('click',event=>{const b=event.target.closest('button');if(!b)return;
+  if(b.dataset.tab){ui.tab=b.dataset.tab;renderSettings();document.querySelector(`[data-tab="${ui.tab}"]`).focus();}
+  else if(b.dataset.open){const name=b.dataset.open;if(ui.open===name&&ui.pinned){closeCard();if(event.detail===0)document.querySelector(`[data-open="${name}"]`)?.focus();feedback('Card closed.');}else{openCard(name);if(event.detail===0)document.querySelector('.close-card')?.focus();}}
+  else if(b.hasAttribute('data-close')){const previous=ui.open;closeCard();if(event.detail===0)document.querySelector(`[data-open="${previous}"]`)?.focus();feedback('Card closed.');}
+  else if(b.id==='expand-preview'){ui.expanded=!ui.expanded;document.querySelector('.preview').classList.toggle('expanded',ui.expanded);b.setAttribute('aria-expanded',String(ui.expanded));b.textContent=ui.expanded?'Collapse':'Expand';}
+  else if(b.id==='scroll-demo')tryScroll();
+  else if(b.id==='reset-demo'){closeCard();ui.header=false;document.getElementById('watch-viewport').scrollTop=0;renderWatch();feedback('Preview reset. Your settings are unchanged.');}
+ });
+ document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&ui.open){event.preventDefault();const previous=ui.open;closeCard();document.querySelector(`[data-open="${previous}"]`)?.focus();feedback('Card closed.');return;}
+  if(event.target.closest('[data-tab]')&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const keys=Object.keys(categories),i=keys.indexOf(ui.tab);ui.tab=keys[event.key==='Home'?0:event.key==='End'?2:(i+(event.key==='ArrowRight'?1:2))%3];renderSettings();document.querySelector(`[data-tab="${ui.tab}"]`).focus();}
+  if(model.shortcut&&event.key.toLowerCase()==='t'&&!event.target.closest('input,select,textarea,button,[contenteditable]')){ui.zen=!ui.zen;closeCard();ui.header=false;document.getElementById('watch-viewport').scrollTop=0;renderWatch();feedback(ui.zen?'Zen enabled for this preview.':'Zen disabled for this preview. Auto Zen preference is unchanged.');}
+ });
+ document.querySelector('.watch-shell').addEventListener('pointermove',hoverPreview);
+ document.querySelector('.watch-shell').addEventListener('pointerleave',()=>{if(!ui.pinned)closeCard();if(ui.header){ui.header=false;renderWatch();}});
+ document.getElementById('watch-viewport').addEventListener('wheel',event=>{if(event.target.closest('#demo-video')&&!event.target.closest('.player-controls')&&zenActive()&&model.details.location==='card'&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&Math.abs(event.deltaY)>=Math.abs(event.deltaX)){event.preventDefault();tryScroll(event.deltaY*(event.deltaMode===1?16:event.deltaMode===2?300:1));}}, {passive:false});
+}
+bindEvents();renderSettings();renderWatch();
+</script></body></html>
