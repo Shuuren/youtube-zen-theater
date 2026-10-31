@@ -51,7 +51,7 @@ async function init() {
   bindControlEvents();
   setControlsEnabled(true);
   updateConditionalControls();
-  setStatus(loadFailed ? 'Could not load settings. Defaults shown.' : 'Settings loaded.', loadFailed);
+  setStatus(loadFailed ? 'Could not load settings. Defaults shown.' : '', loadFailed);
 }
 
 /** @param {boolean} enabled */
@@ -82,19 +82,37 @@ function renderDistractionFilters() {
     }
 
     const label = document.createElement('label');
-    label.className = 'row compact-row';
+    label.className = 'row';
     const text = document.createElement('span');
-    const title = document.createElement('strong');
-    title.textContent = filter.label;
+    text.textContent = filter.label;
     const detail = document.createElement('small');
     detail.textContent = filter.detail;
     const input = document.createElement('input');
     input.type = 'checkbox';
     input.id = filter.key;
-    text.append(title, detail);
+
+    if (filter.group !== 'playback') {
+      input.dataset.quiet = '';
+      input.dataset.quietLabel = quietName(filter.label);
+    }
+
+    text.append(detail);
     label.append(text, input);
-    host.append(label);
+
+    const groupHost = document.querySelector(`[data-filter-group="${filter.group}"] .fold-body`);
+    const follow = groupHost ? groupHost.querySelector('[data-when]') : null;
+
+    if (groupHost && follow) {
+      groupHost.insertBefore(label, follow);
+    } else {
+      (groupHost || host).append(label);
+    }
   }
+}
+
+/** @param {string} label */
+function quietName(label) {
+  return label.replace(/^(Hide |Disable )/i, '').toLowerCase();
 }
 
 /** @param {PopupSettings} settings */
@@ -249,8 +267,109 @@ function updateConditionalControls() {
   const detailsHelp = document.getElementById('details-help');
   const playlistHelp = document.getElementById('playlist-help');
 
-  if (detailsHelp) detailsHelp.textContent = detailsCard ? '' : 'Scroll down for the channel, actions, description and comments.';
+  if (detailsHelp) {
+    detailsHelp.textContent = detailsCard
+      ? 'Edge button stays available.'
+      : 'Channel, actions, and comments stay on the page.';
+  }
 
-  if (playlistHelp) playlistHelp.textContent = playlistCard ? '' : currentSettings.playlistLocation === 'hidden' ? 'Playlist hidden. Your card preferences are kept.' : 'The queue stays in the page sidebar.';
+  if (playlistHelp) {
+    playlistHelp.textContent = playlistCard
+      ? 'Edge button stays available.'
+      : currentSettings.playlistLocation === 'hidden'
+        ? 'Hidden. Card preferences stay saved.'
+        : 'The queue stays in the sidebar.';
+  }
+
+  const headerReveal = document.querySelector('[data-when="header-hidden"]');
+
+  if (headerReveal instanceof HTMLElement) {
+    headerReveal.hidden = !currentSettings.hideHeader;
+  }
+
+  writeQuietCopy();
   window.updateZenPreview?.(currentSettings);
+}
+
+function writeQuietCopy() {
+  const labels = [];
+
+  for (const box of document.querySelectorAll('#quiet [data-quiet]')) {
+    if (!(box instanceof HTMLInputElement) || !box.checked || box.closest('[hidden]') || !box.dataset.quietLabel) {
+      continue;
+    }
+
+    labels.push(box.dataset.quietLabel);
+  }
+
+  const quietSummary = document.getElementById('quiet-summary');
+
+  if (quietSummary) {
+    if (labels.length === 0) {
+      quietSummary.textContent = 'Nothing on the page is hidden.';
+    } else if (labels.length > 3) {
+      quietSummary.textContent = `${labels.length} distractions stay hidden.`;
+    } else {
+      quietSummary.textContent = `${joinLabels(labels)} stay hidden.`;
+    }
+  }
+
+  for (const count of document.querySelectorAll('[data-fold-count]')) {
+    const fold = count.closest('.fold');
+
+    if (!fold) {
+      continue;
+    }
+
+    let on = 0;
+
+    for (const box of fold.querySelectorAll('[data-quiet]')) {
+      if (box instanceof HTMLInputElement && box.checked && !box.closest('[hidden]')) {
+        on += 1;
+      }
+    }
+
+    count.textContent = on === 0 ? 'Shown' : on === 1 ? '1 hidden' : `${on} hidden`;
+  }
+
+  const playback = document.getElementById('playback-summary');
+  const look = document.getElementById('look-summary');
+
+  if (playback) {
+    const start = !currentSettings.autoZen
+      ? 'Manual start'
+      : currentSettings.startupMode === 'theater'
+        ? 'Starts in theater'
+        : 'Starts in Zen';
+
+    const autoplay = currentSettings.disableAutoplay ? 'Autoplay off' : 'Autoplay on';
+
+    playback.textContent = `${start} · ${autoplay}`;
+  }
+
+  if (look) {
+    const surface = currentSettings.drawerImplementation === 'native' ? 'YouTube surface' : 'Zen surface';
+    const shadow = currentSettings.drawerGlassEffect ? 'Accented shadow' : 'Flat shadow';
+
+    look.textContent = `${surface} · ${shadow}`;
+  }
+}
+
+/**
+ * @param {string[]} labels
+ * @returns {string}
+ */
+function joinLabels(labels) {
+  const first = labels[0] || '';
+  const head = first.charAt(0).toUpperCase() + first.slice(1);
+
+  if (labels.length === 1) {
+    return head;
+  }
+
+  if (labels.length === 2) {
+    return `${head} and ${labels[1]}`;
+  }
+
+  return `${head}, ${labels[1]}, and ${labels[2]}`;
 }

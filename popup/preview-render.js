@@ -34,13 +34,27 @@ function renderPreviewSummary(settings) {
   const summary = document.getElementById('preview-summary');
 
   if (!summary) return;
-  summary.textContent = ['details', 'playlist'].map((name) => {
-    const location = (name === 'details' ? settings.detailsLocation : settings.playlistLocation);
-    const label = name === 'details' ? 'Details' : 'Playlist';
-    const trigger = (name === 'details' ? settings.detailsTrigger : settings.playlistTrigger);
 
-    return `${label} · ${location === 'card' ? (name === 'details' ? settings.detailsSide : settings.playlistSide) + ' · ' + (trigger === 'scroll-hover' ? 'scroll + hover' : trigger) : location === 'page' ? name === 'details' ? 'below video' : 'on page' : 'hidden'}`;
-  }).join('\n');
+  const caption = `${placePhrase('details', settings)} · ${placePhrase('playlist', settings)}`;
+  summary.textContent = caption;
+  summary.title = caption;
+}
+
+/**
+ * @param {'details' | 'playlist'} name
+ * @param {PopupSettings} settings
+ * @returns {string}
+ */
+function placePhrase(name, settings) {
+  const location = name === 'details' ? settings.detailsLocation : settings.playlistLocation;
+
+  if (location === 'hidden') return 'Playlist hidden';
+
+  if (location !== 'card') return name === 'details' ? 'Details below' : 'Playlist on page';
+
+  const side = name === 'details' ? settings.detailsSide : settings.playlistSide;
+
+  return `${name === 'details' ? 'Details' : 'Playlist'} on the ${side}`;
 }
 
 window.renderPreviewScene = renderPreviewScene;

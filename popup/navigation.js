@@ -1,41 +1,34 @@
-const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+const summaries = Array.from(document.querySelectorAll('.fold > summary'));
 
-/** @param {Element} selected */
-function selectSettingsTab(selected) {
-  for (const tab of tabs) {
-    const active = tab === selected;
-    tab.setAttribute('aria-selected', String(active));
-    tab.setAttribute('tabindex', active ? '0' : '-1');
-    const panel = document.getElementById(tab.getAttribute('aria-controls'));
-
-    if (panel) {
-      panel.hidden = !active;
-    }
+/** @param {Element | undefined} summary */
+function focusSummary(summary) {
+  if (summary instanceof HTMLElement) {
+    summary.focus();
   }
 }
 
-for (const tab of tabs) {
-  tab.addEventListener('click', () => selectSettingsTab(tab));
-  tab.addEventListener('keydown', (event) => {
+for (const summary of summaries) {
+  summary.addEventListener('keydown', (event) => {
     if (!(event instanceof KeyboardEvent)) {
       return;
     }
 
-    const index = tabs.indexOf(tab);
+    const index = summaries.indexOf(summary);
     let next = index;
 
-    if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
-    else if (event.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length;
-    else if (event.key === 'Home') next = 0;
-    else if (event.key === 'End') next = tabs.length - 1;
-    else return;
+    if (event.key === 'ArrowDown') {
+      next = (index + 1) % summaries.length;
+    } else if (event.key === 'ArrowUp') {
+      next = (index + summaries.length - 1) % summaries.length;
+    } else if (event.key === 'Home') {
+      next = 0;
+    } else if (event.key === 'End') {
+      next = summaries.length - 1;
+    } else {
+      return;
+    }
 
     event.preventDefault();
-    const nextTab = tabs[next];
-    selectSettingsTab(nextTab);
-
-    if (nextTab instanceof HTMLElement) {
-      nextTab.focus();
-    }
+    focusSummary(summaries[next]);
   });
 }

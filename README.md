@@ -12,11 +12,11 @@ Chrome MV3 extension for YouTube watch pages.
 - Reveals the hidden masthead when hovering the top edge.
 - Scrolls naturally to the channel, actions, description, and comments by default.
 - Optional side card: scroll down over the video to open details on the left or right. Further scrolling over the video scrolls the card. Inside the card, native scrolling is preserved. Close with Escape or its edge button.
-- Choose **General → Playback → Start in** to open videos in Zen mode or native YouTube theater automatically. **Start automatically** enables or disables this behavior.
+- Open **Playback** and choose **Start in** to open videos in Zen mode or native YouTube theater automatically. **Start automatically** enables or disables this behavior. **Disable autoplay** turns off the next video.
 - Choose **Shortcut key → Shift+T** to preserve YouTube's native `T`; `Shift+T` toggles Zen. Existing users keep the `T` shortcut until they change it. Typing in inputs/comments is ignored.
-- Popup settings use General, Distractions, and Appearance tabs. General gives details and playlists independent locations, sides, and opening methods. A compact interactive layout preview shows the result without changing settings; expand it to try scrolling and drawer buttons. Hover delay and shared-edge regions appear when relevant. Edge buttons remain available for every card. Appearance changes styling without moving content. Existing saved settings remain compatible.
+- Popup settings keep Layout open: details and playlist each have their own location, edge, and opening method. Quiet groups (around the video, home and search, comments, page chrome) are rendered from the stored distraction filters and collapse to a count. Playback and Look collapse to the current choice. A compact layout preview shows the result without changing settings; expand it to try scrolling and drawer buttons. Hover delay and shared-edge regions appear when relevant. Edge buttons remain available for every card. Look changes styling without moving content. Existing saved settings remain compatible.
 
-Recommendations are hidden by default. Use **Distractions → Hide recommendations** to show them again. Hiding the list preserves the sidebar space and the native details width; playlist drawers move only the native playlist panel.
+Recommendations are hidden by default. Open **Quiet → Around the video → Hide recommendations** to show them again. Hiding the list preserves the sidebar space and the native details width; playlist drawers move only the native playlist panel.
 
 ## Install
 

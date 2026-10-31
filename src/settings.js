@@ -52,84 +52,96 @@ const DISTRACTION_FILTERS = [
     label: 'Hide home feed',
     detail: 'Clear the recommendation wall on Home',
     rootClass: 'ytzt-hide-home-feed',
-    defaultValue: true
+    defaultValue: true,
+    group: 'browse'
   },
   {
     key: 'hideShorts',
     label: 'Hide Shorts',
     detail: 'Remove Shorts shelves. A Shorts link you open still plays',
     rootClass: 'ytzt-hide-shorts',
-    defaultValue: false
+    defaultValue: false,
+    group: 'browse'
   },
   {
     key: 'hideEndScreen',
     label: 'Hide end screen',
     detail: 'Remove the video grid when playback ends',
     rootClass: 'ytzt-hide-endscreen',
-    defaultValue: true
+    defaultValue: true,
+    group: 'watch'
   },
   {
     key: 'hideInfoCards',
     label: 'Hide info cards',
     detail: 'Remove cards that pop over the video',
     rootClass: 'ytzt-hide-info-cards',
-    defaultValue: true
+    defaultValue: true,
+    group: 'watch'
   },
   {
     key: 'disableAutoplay',
     label: 'Disable autoplay',
     detail: 'Turn off the next video. Next and previous stay available',
     rootClass: 'ytzt-disable-autoplay',
-    defaultValue: true
+    defaultValue: true,
+    group: 'playback'
   },
   {
     key: 'hideComments',
     label: 'Hide comments',
     detail: 'Keep comments out of the page and the details card',
     rootClass: 'ytzt-hide-comments',
-    defaultValue: false
+    defaultValue: false,
+    group: 'comments'
   },
   {
     key: 'hideMixes',
     label: 'Hide mixes',
     detail: 'Remove mix and radio shelves',
     rootClass: 'ytzt-hide-mixes',
-    defaultValue: false
+    defaultValue: false,
+    group: 'watch'
   },
   {
     key: 'hideSearchShelves',
     label: 'Hide search shelves',
     detail: 'Leave the video results, remove the extra shelves',
     rootClass: 'ytzt-hide-search-shelves',
-    defaultValue: true
+    defaultValue: true,
+    group: 'browse'
   },
   {
     key: 'hideTrending',
     label: 'Hide Trending and Explore',
     detail: 'Hide those entries and pages',
     rootClass: 'ytzt-hide-trending',
-    defaultValue: false
+    defaultValue: false,
+    group: 'browse'
   },
   {
     key: 'hideMoreYouTube',
     label: 'Hide More from YouTube',
     detail: 'Remove Premium, Music, and Movies from the guide',
     rootClass: 'ytzt-hide-more-youtube',
-    defaultValue: true
+    defaultValue: true,
+    group: 'browse'
   },
   {
     key: 'hideNotifications',
     label: 'Hide notifications',
     detail: 'Hide the bell and the unread count in the tab title',
     rootClass: 'ytzt-hide-notifications',
-    defaultValue: true
+    defaultValue: true,
+    group: 'chrome'
   },
   {
     key: 'hideOffers',
     label: 'Hide offers and promos',
     detail: 'Merch, tickets, fundraisers, and survey prompts',
     rootClass: 'ytzt-hide-offers',
-    defaultValue: true
+    defaultValue: true,
+    group: 'watch'
   }
 ];
 
