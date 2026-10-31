@@ -1,0 +1,60 @@
+.layout-preview {
+  --preview-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid #252525;
+  border-radius: 19px;
+  background: #111;
+}
+.preview-toolbar, .preview-toolbar > div { display: flex; align-items: center; gap: 5px; }
+.preview-toolbar { justify-content: space-between; margin-bottom: 8px; }
+.preview-toolbar h2 { margin: 0; color: #ddd; font-size: 11px; font-weight: 600; }
+.preview-toolbar button, .sample-edge, .sample-card button {
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 1px solid #3b3b3b;
+  border-radius: 7px;
+  color: #e8e8e8;
+  background: #1c1c1c;
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+.preview-toolbar button:disabled { color: #929292; background: #151515; cursor: default; }
+.preview-scene { position: relative; height: 120px; overflow: hidden; border: 1px solid #343434; border-radius: var(--preview-radius); background: #101010; isolation: isolate; }
+.expanded .preview-scene { height: 240px; }
+.sample-page { height: 100%; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.sample-video { height: 120px; display: grid; place-items: center; position: relative; background: radial-gradient(ellipse at 75% 10%, #424769, transparent 70%), linear-gradient(145deg, #252c40, #151824); }
+.expanded .sample-video { height: 240px; }
+.sample-caption { position: absolute; top: 8px; left: 9px; color: #c5c8d4; font-size: 9px; }
+.sample-play { width: 22px; height: 22px; color: #fff; transform: translateX(2px); }
+.sample-controls { position: absolute; right: 0; bottom: 0; left: 0; padding: 14px 9px 5px; background: linear-gradient(transparent, #000c); font-size: 8px; color: #ddd; }
+.sample-controls i { display: block; height: 2px; margin-bottom: 4px; background: linear-gradient(to right, #ff304f 28%, #7778 28%); }
+.sample-columns { display: grid; grid-template-columns: minmax(0, 1fr) 30%; gap: 10px; padding: 10px; }
+.sample-columns aside { font-size: 8px; color: #aaa; }
+.sample-details, .sample-playlist { display: grid; gap: 7px; font-size: 9px; color: #bbb; }
+.sample-details b, .sample-playlist b { color: #eee; font-size: 10px; }
+.sample-details p { font-size: 9px; margin: 0; padding: 6px 0; }
+.sample-playlist span { padding: 5px; border-radius: 3px; background: #292929; }
+.sample-header { display: flex; justify-content: space-between; padding: 5px 8px; background: #191919; font-size: 9px; }
+.sample-header span { color: #aaa; }
+.sample-recommendations { margin-top: 8px; }
+.sample-recommendations div { height: 25px; border-radius: 3px; background: #282828; margin-top: 5px; }
+.sample-edge { position: absolute; top: 42%; z-index: 3; font-size: 9px; padding: 4px 5px; background: #202020f5; }
+.sample-edge.left { left: 0; border-radius: 0 6px 6px 0; border-left: 0; }
+.sample-edge.right { right: 0; border-radius: 6px 0 0 6px; border-right: 0; }
+.sample-edge.upper { top: 12%; }
+.sample-edge.lower { top: 64%; }
+.sample-edge[aria-expanded="true"] { color: #fff; background: #383838; }
+.sample-card { position: absolute; top: 6px; bottom: 6px; z-index: 2; width: 72%; box-sizing: border-box; padding: 8px; border: 1px solid transparent; border-radius: 10px; background: #121212; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; box-shadow: 0 0 0 1px oklch(1 0 0 / 0.13), 0 3px 6px #0004, 0 12px 24px #0005; }
+.sample-card.left { left: 6px; }
+.sample-card.right { right: 6px; }
+.sample-card.native { background: #202020; }
+.sample-card.accented { box-shadow: 0 0 0 1px oklch(1 0 0 / 0.13), 0 4px 12px #0005, 0 12px 28px #ff304f18; }
+.sample-card header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: 10px; }
+.sample-card button { width: 28px; padding: 0; font-size: 16px; }
+.preview-summary { white-space: pre-line; margin-top: 7px; color: #bbb; font-size: 10px; line-height: 1.5; }
+.preview-feedback { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (hover: hover) {
+  .preview-toolbar button:not(:disabled):hover, .sample-edge:hover, .sample-card button:hover { background: #303030; color: #fff; }
+}

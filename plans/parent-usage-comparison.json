@@ -1,0 +1,110 @@
+{
+  "baseline": {
+    "timestamp": "2026-09-22T12:54:40.264Z",
+    "usage": {
+      "input_tokens": 1262054,
+      "cached_input_tokens": 1155968,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 7274,
+      "reasoning_output_tokens": 805,
+      "total_tokens": 1269328
+    }
+  },
+  "after_completion": {
+    "timestamp": "2026-09-22T14:03:39.442Z",
+    "usage": {
+      "input_tokens": 1690104,
+      "cached_input_tokens": 1578752,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 8700,
+      "reasoning_output_tokens": 1152,
+      "total_tokens": 1698804
+    }
+  },
+  "delta": {
+    "input_tokens": 428050,
+    "cached_input_tokens": 422784,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 1426,
+    "reasoning_output_tokens": 347,
+    "total_tokens": 429476
+  },
+  "samples_since_baseline": [
+    {
+      "timestamp": "2026-09-22T12:54:40.264Z",
+      "usage": {
+        "input_tokens": 1262054,
+        "cached_input_tokens": 1155968,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 7274,
+        "reasoning_output_tokens": 805,
+        "total_tokens": 1269328
+      }
+    },
+    {
+      "timestamp": "2026-09-22T12:55:12.473Z",
+      "usage": {
+        "input_tokens": 1368097,
+        "cached_input_tokens": 1258752,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 8171,
+        "reasoning_output_tokens": 915,
+        "total_tokens": 1376268
+      }
+    },
+    {
+      "timestamp": "2026-09-22T12:55:30.468Z",
+      "usage": {
+        "input_tokens": 1475095,
+        "cached_input_tokens": 1364608,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 8619,
+        "reasoning_output_tokens": 1137,
+        "total_tokens": 1483714
+      }
+    },
+    {
+      "timestamp": "2026-09-22T13:55:37.895Z",
+      "usage": {
+        "input_tokens": 1582569,
+        "cached_input_tokens": 1471488,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 8651,
+        "reasoning_output_tokens": 1137,
+        "total_tokens": 1591220
+      }
+    },
+    {
+      "timestamp": "2026-09-22T14:03:39.442Z",
+      "usage": {
+        "input_tokens": 1690104,
+        "cached_input_tokens": 1578752,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 8700,
+        "reasoning_output_tokens": 1152,
+        "total_tokens": 1698804
+      }
+    }
+  ],
+  "interpretation": "Includes dispatch and final review setup. Parent waited for 3601 seconds then 474 seconds. No progress or log checks occurred at first timeout; only renewed wait. Not a controlled before/after historical monitoring comparison; no guaranteed savings claim.",
+  "final_observed_sample": {
+    "timestamp": "2026-09-22T18:03:25.225Z",
+    "usage": {
+      "input_tokens": 3439180,
+      "cached_input_tokens": 3151488,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 12897,
+      "reasoning_output_tokens": 1956,
+      "total_tokens": 3452077
+    }
+  },
+  "hourly_renewal_evidence": {
+    "before_wait": "2026-09-22T12:55:30.468Z",
+    "renewal": "2026-09-22T13:55:37.895Z",
+    "input_tokens": 107474,
+    "cached_input_tokens": 106880,
+    "output_tokens": 32,
+    "note": "Renewal only, no status/log read. Cached tokens remain consumption. No controlled historical before-period exists."
+  },
+  "limitation": "CLI process polling ran inside a tool cell without parent model calls. functions.wait used 3600000ms timed waits; renewal still invoked parent. Tool interface documents no indefinite process-completion/user-input suspension. Eliminating timed renewals requires a host completion-only wait interrupted by user input; not implemented by repository AGENTS.md."
+}

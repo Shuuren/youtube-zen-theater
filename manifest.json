@@ -16,13 +16,25 @@
         "https://youtube.com/*"
       ],
       "js": [
+        "src/native-panels.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://youtube.com/*"
+      ],
+      "js": [
         "src/content.js"
       ],
       "css": [
         "src/zen.css"
       ],
       "run_at": "document_start",
-      "all_frames": true
+      "all_frames": false
     }
   ],
   "action": {
