@@ -5,12 +5,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from playwright.sync_api import BrowserContext, Page, TimeoutError as PlaywrightTimeoutError, sync_playwright
+if TYPE_CHECKING:
+    from playwright.sync_api import BrowserContext, Page
 
 
 DEFAULT_URL = "https://www.youtube.com/watch?v=EvCMaE94p1g"
@@ -19,6 +22,7 @@ DEFAULT_TIMEOUT_MS = 45_000
 DEFAULT_CYCLES = 4
 DEFAULT_OUTPUT_DIR = Path("diagnostics/zen-toggle-resize")
 GEOMETRY_TOLERANCE_PX = 3
+URL_PATTERN = re.compile(r"https?://[^\s<>\"']+")
 
 
 def parse_args() -> argparse.Namespace:
@@ -34,6 +38,51 @@ def parse_args() -> argparse.Namespace:
         help="Directory for failure screenshots and the JSON report",
     )
     return parser.parse_args()
+
+
+def redact_error(error: str | None) -> str | None:
+    if error is None:
+        return None
+
+    return URL_PATTERN.sub("[URL redacted]", error)
+
+
+def write_report(
+    output_dir: Path,
+    started_at: str,
+    args: argparse.Namespace,
+    status: str,
+    measurements: list[dict[str, Any]],
+    error: str | None = None,
+) -> Path:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    report = {
+        "version": 1,
+        "status": status,
+        "startedAt": started_at,
+        "finishedAt": datetime.now(timezone.utc).isoformat(),
+        "cycles": args.cycles,
+        "timeoutMs": args.timeout_ms,
+        "measurements": [
+            {
+                "cycle": measurement.get("cycle"),
+                "valid": measurement.get("valid"),
+                "zenActive": measurement.get("zenActive"),
+                "theaterActive": measurement.get("theaterActive"),
+                "viewport": measurement.get("viewport"),
+                "player": measurement.get("player"),
+                "video": measurement.get("video"),
+            }
+            for measurement in measurements
+        ],
+    }
+    redacted_error = redact_error(error)
+    if redacted_error:
+        report["error"] = redacted_error
+
+    report_path = output_dir / "report.json"
+    report_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return report_path
 
 
 def rect_is_viewport(rect: dict[str, float], viewport: dict[str, float]) -> bool:
@@ -269,18 +318,25 @@ def exercise(page: Page, cycles: int, timeout_ms: int, output_dir: Path) -> list
 
 def main() -> int:
     args = parse_args()
+    started_at = datetime.now(timezone.utc).isoformat()
     if args.cycles < 1:
         print("--cycles must be at least 1", file=sys.stderr)
+        write_report(args.output_dir, started_at, args, "invalid", [], "--cycles must be at least 1")
         return 2
 
     extension_dir = Path(__file__).resolve().parents[1]
     helium_path = Path(args.helium)
     if not helium_path.is_file():
         print(f"Helium executable not found: {helium_path}", file=sys.stderr)
+        write_report(args.output_dir, started_at, args, "blocked", [], f"Helium executable not found: {helium_path}")
         return 2
 
     measurements: list[dict[str, Any]] = []
+    status = "blocked"
+    error_message: str | None = None
     try:
+        from playwright.sync_api import BrowserContext, TimeoutError as PlaywrightTimeoutError, sync_playwright
+
         with sync_playwright() as playwright:
             with tempfile.TemporaryDirectory(prefix="youtube-zen-playwright-") as profile_dir:
                 context: BrowserContext = playwright.chromium.launch_persistent_context(
@@ -303,19 +359,29 @@ def main() -> int:
                     measurements = exercise(page, args.cycles, args.timeout_ms, args.output_dir)
                 finally:
                     context.close()
+    except ImportError as error:
+        error_message = f"Playwright is unavailable: {error}"
     except PlaywrightTimeoutError as error:
-        print(f"BLOCKED: Helium/YouTube did not reach the expected state: {error}", file=sys.stderr)
-        return 2
+        error_message = f"Helium/YouTube did not reach the expected state: {error}"
     except Exception as error:  # noqa: BLE001 - report launch/runtime blockers clearly
-        print(f"BLOCKED: could not run Helium diagnostic: {error}", file=sys.stderr)
+        error_message = f"could not run Helium diagnostic: {error}"
+
+    if error_message:
+        print(f"BLOCKED: {error_message}", file=sys.stderr)
+        report_path = write_report(args.output_dir, started_at, args, status, measurements, error_message)
+        print(f"Report: {report_path}", file=sys.stderr)
         return 2
 
     failures = [measurement for measurement in measurements if not measurement["valid"]]
+    status = "failed" if failures else "pass"
+    report_path = write_report(args.output_dir, started_at, args, status, measurements)
     if failures:
         print(f"FAILED: {len(failures)} of {len(measurements)} Zen entries had non-viewport geometry", file=sys.stderr)
+        print(f"Report: {report_path}", file=sys.stderr)
         return 1
 
     print(f"PASS: {len(measurements)} Zen toggle entries matched the viewport within {GEOMETRY_TOLERANCE_PX}px")
+    print(f"Report: {report_path}")
     return 0
 
 

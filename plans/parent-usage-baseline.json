@@ -1,0 +1,27 @@
+{
+  "sampled_at": "2026-09-22T12:55:11.420433+00:00",
+  "parent_session": "/Users/renshuuuu/.codex/sessions/2026/09/22/rollout-2026-09-22T19-14-43-01a0c8d3-4309-7c43-8118-1f2af97b5907.jsonl",
+  "before_dispatch": {
+    "timestamp": "2026-09-22T12:54:40.264Z",
+    "usage": {
+      "input_tokens": 1262054,
+      "cached_input_tokens": 1155968,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 7274,
+      "reasoning_output_tokens": 805,
+      "total_tokens": 1269328
+    }
+  },
+  "previous_sample": {
+    "timestamp": "2026-09-22T12:53:08.520Z",
+    "usage": {
+      "input_tokens": 1159047,
+      "cached_input_tokens": 1055360,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 4312,
+      "reasoning_output_tokens": 737,
+      "total_tokens": 1163359
+    }
+  },
+  "note": "Counters include cached input. Baseline work is task setup, not an observed historical idle loop. Compare one final sample after process completion; do not create monitoring loop."
+}

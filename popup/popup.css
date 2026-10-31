@@ -40,16 +40,18 @@ body {
 .mark svg {
   width: 28px;
   height: 28px;
+  color: #f7f7f7;
   fill: none;
-  stroke: #f7f7f7;
+  stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 2;
 }
 
 .mark path:nth-of-type(1) {
-  fill: #ff304f;
-  stroke: #ff304f;
+  color: #ff304f;
+  fill: currentColor;
+  stroke: currentColor;
 }
 
 h1 {
@@ -80,7 +82,7 @@ p {
 }
 
 .advanced {
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid #252525;
   border-radius: 8px;
   background: #101010;
@@ -213,4 +215,107 @@ select:focus-visible {
 
 .range-row {
   align-items: start;
+}
+
+
+/* Category navigation reuses the popup's original colors and controls. */
+.tabs {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #252525;
+}
+
+.tabs button {
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: #a3a3a3;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tabs button[aria-selected="true"] {
+  border-bottom-color: #ff304f;
+  color: #f7f7f7;
+}
+
+@media (hover: hover) {
+  .tabs button:hover { color: #f7f7f7; }
+}
+
+
+
+.tabs button:focus-visible,
+input[type="range"]:focus-visible {
+  outline: 2px solid #f7f7f7;
+  outline-offset: 2px;
+}
+
+.settings {
+  align-content: start;
+  gap: 7px;
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.row span {
+  min-width: 0;
+}
+
+select {
+  max-width: 155px;
+}
+
+.explanation,
+.hint {
+  margin: 0 2px;
+  color: #a3a3a3;
+  font-size: 11px;
+}
+
+.status {
+  min-height: 18px;
+  margin: 14px 2px 0;
+  color: #a3a3a3;
+  font-size: 11px;
+}
+
+.status[data-state="error"] {
+  color: #ffb3bd;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  input[type="checkbox"],
+  input[type="checkbox"]::after {
+    transition: none;
+  }
+}
+
+/* Content-first settings keep the original popup's visual language. */
+body { max-height: 600px; }
+.panel { display: flex; flex-direction: column; box-sizing: border-box; height: 600px; }
+.header, .layout-preview, .tabs, .status { flex-shrink: 0; }
+.settings { flex: 1; min-height: 0; max-height: none; padding: 2px 4px 3px 0; gap: 16px; overscroll-behavior: contain; }
+.card-options { display: grid; gap: 7px; }
+.row { min-height: 48px; box-sizing: border-box; padding: 9px 10px; }
+.group { gap: 7px; }
+.group legend { margin-bottom: 7px; }
+select { font-size: 12px; }
+.status { margin-top: 8px; min-height: 16px; font-size: 10px; }
+button:focus-visible, .preview-scene:focus-visible { outline: 2px solid #f7f7f7; outline-offset: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  button { transition: scale 150ms ease-out, background-color 150ms ease-out; }
+  button:not(:disabled):active { scale: 0.96; }
+}
+@media (prefers-reduced-motion: reduce) {
+  button { transition: background-color 150ms ease-out; }
 }

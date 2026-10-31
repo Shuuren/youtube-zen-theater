@@ -1,0 +1,135 @@
+<!doctype html>
+<!-- Throwaway popup organization study. Open this file; ?variant=A, B, or C selects a layout.
+     No extension APIs, storage, or production popup code. All choices live in memory. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YouTube Zen popup prototypes</title>
+<style>
+:root{color-scheme:dark;--ink:#f1f1f3;--sub:#a6a6af;--surface:#202024;--raised:#29292e;--line:#37373e;--brand:#c8d4b4;--brand-ink:#242c1b;--radius:16px}
+*{box-sizing:border-box}body{margin:0;background:transparent;color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select{font:inherit}button,select,summary,label{ -webkit-tap-highlight-color:transparent}button,select,summary{cursor:pointer}button{color:inherit}button:active{transform:translateY(1px)}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--brand);outline-offset:3px}button{transition:background 140ms ease-out,transform 140ms ease-out}p,h1,h2,h3{margin:0}small{font-size:12px;color:var(--sub)}
+.study{width:100%;min-width:0;padding:8px 0 90px;display:grid;gap:20px}.intro{display:grid;gap:5px;color:var(--foreground,var(--ink));max-width:65ch}.intro h1{font-size:18px;letter-spacing:-.4px;font-weight:600}.intro p{font-size:13px;color:var(--muted-foreground,var(--sub))}.study>*{min-width:0}.workbench{min-width:0;display:flex;justify-content:center}.popup{max-height:610px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent;width:min(384px,100%);max-width:100%;border-radius:var(--radius);background:var(--surface);padding:20px;box-shadow:0 0 0 1px #ffffff08,0 4px 8px #00000014,0 16px 40px #00000024;display:flex;flex-direction:column;gap:20px;align-content:start}.popup>*{flex-shrink:0}.brand{display:flex;align-items:center;gap:10px}.logo{width:30px;height:30px;border:1px solid var(--line);border-radius:9px;display:grid;place-items:center;color:var(--brand)}.logo svg{width:18px;height:18px}.brand h2{font-size:16px;font-weight:600;letter-spacing:-.3px}.brand p{font-size:11px;color:var(--sub)}.stack{display:grid;gap:22px}.section{display:grid;gap:9px}.section h3,.section>legend{font-size:12px;font-weight:600;color:var(--sub)}.rows{display:grid;gap:0}.row{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:52px;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}.row span{display:grid;gap:1px}.row strong{font-size:13px;font-weight:500}.row small{font-size:11px;max-width:29ch}.toggle{appearance:none;flex-shrink:0;width:32px;height:20px;border-radius:12px;background:#52525b;position:relative;cursor:pointer;margin:0}.toggle:before{content:"";position:absolute;width:14px;height:14px;top:3px;left:3px;background:#f7f7f7;border-radius:50%;transition:transform 140ms ease-out}.toggle:checked{background:var(--brand)}.toggle:checked:before{transform:translateX(12px);background:var(--brand-ink)}select{max-width:145px;min-height:36px;border-radius:7px;border:1px solid var(--line);padding:5px 8px;color:var(--ink);background:var(--raised)}.choice-group{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice{padding:12px 10px;min-height:87px;display:grid;gap:7px;border:1px solid var(--line);background:transparent;border-radius:10px;text-align:left}.choice[aria-pressed=true]{border-color:var(--brand);background:color-mix(in oklch,var(--brand) 8%,var(--surface))}.choice strong{font-size:13px;font-weight:500}.choice small{font-size:11px;line-height:1.45}.choice .indicator{display:inline-block;width:11px;height:11px;border:1px solid var(--sub);border-radius:50%;margin-right:7px}.choice[aria-pressed=true] .indicator{border:3px solid var(--brand)}.example{border-radius:8px;background:#17171a;padding:12px;display:flex;align-items:center;gap:12px}.scene{width:70px;height:44px;background:#33333a;border-radius:4px;display:grid;place-items:center;flex-shrink:0;overflow:hidden}.scene svg{width:62px;height:40px}.example p{font-size:11px;color:var(--sub);line-height:1.45}.example strong{color:var(--ink);font-weight:500}.subsection{border-left:2px solid var(--line);padding-left:12px;display:grid;gap:4px}.advanced{border-top:1px solid var(--line);padding-top:12px}.advanced summary{font-size:12px;min-height:32px;color:var(--sub)}.advanced[open]>div{padding-top:8px}.tabnav{display:flex;border-bottom:1px solid var(--line);gap:16px}.tabnav button{border:0;border-bottom:2px solid transparent;padding:9px 0;background:transparent;font-size:12px;color:var(--sub);min-height:44px}.tabnav button[aria-current=page]{border-bottom-color:var(--brand);color:var(--ink)}.tab-body{min-height:405px}.navrow{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--line);padding:14px 0;min-height:62px}.navrow:last-child{border:0}.navrow span{display:grid;gap:2px}.navrow strong{font-size:13px;font-weight:500}.navrow small{font-size:11px}.chevron{font-size:18px;color:var(--sub)}.back{background:transparent;border:0;padding:0;min-height:36px;text-align:left;color:var(--sub);font-size:12px}.heading{font-size:19px;letter-spacing:-.5px;font-weight:600}.home-main{display:grid;gap:14px}.footnote{font-size:11px;color:var(--sub);border-top:1px solid var(--line);padding-top:12px;display:flex;justify-content:space-between;gap:10px}.footnote kbd{font-family:inherit;color:var(--ink);border:1px solid var(--line);padding:1px 5px;border-radius:4px}.state{max-width:560px;width:100%;justify-self:center;font-size:11px;color:var(--muted-foreground,var(--sub))}.state summary{cursor:pointer;min-height:30px}.state pre{overflow-wrap:anywhere;white-space:pre-wrap;font-size:11px;padding:12px;background:var(--code-background,#202024);color:var(--code-foreground,var(--ink));border-radius:8px}.switcher{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);padding:5px;display:flex;align-items:center;gap:3px;border-radius:14px;background:#333339;color:var(--ink);box-shadow:0 0 0 1px #ffffff0c,0 3px 8px #0002,0 12px 28px #0004;z-index:5;white-space:nowrap}.switcher button{min-width:40px;min-height:40px;border:0;border-radius:9px;background:transparent;font-size:12px}.switcher button[aria-pressed=true]{background:#eeeeed;color:#252528}.switcher button:hover{background:color-mix(in oklch,var(--raised) 85%,white)}.switcher button[aria-pressed=true]:hover{background:#fff}.switcher .arrow{font-size:18px}.variant-label{min-width:0;font-size:11px;padding:0 7px;color:var(--sub)}input[type=range]{width:115px;accent-color:var(--brand)}@media(max-width:420px){.popup{padding:18px}.switcher{bottom:8px}.variant-label{display:none}.study{gap:14px}.tabnav{gap:14px}}@media(prefers-reduced-motion:reduce){*,*:before{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="study">
+ <header class="intro"><h1 id="layout-title"></h1><p id="layout-note"></p></header>
+ <div class="workbench"><article class="popup" aria-label="Prototype extension popup" id="popup"></article></div>
+ <details class="state"><summary>Prototype settings, kept only until this page closes</summary><pre id="state"></pre></details>
+</main>
+<nav class="switcher" aria-label="Compare popup layouts">
+ <button class="arrow" data-cycle="-1" aria-label="Previous layout">‹</button>
+ <span class="variant-label">Layout</span>
+ <button data-variant="A">A · Sections</button><button data-variant="B">B · Tabs</button><button data-variant="C">C · Overview</button>
+ <button class="arrow" data-cycle="1" aria-label="Next layout">›</button>
+</nav>
+<script>
+const state = {scrollBehavior:'page',autoZen:true,shortcutEnabled:true,hideHeader:true,hideRecommendations:true,hideLiveChat:true,revealHeaderOnHover:true,revealPlaylistOnHover:true,extraTrigger:'none',sideHoverPosition:'right',revealSideLayout:'separate',sameSideSplit:'playlist-top',hoverRevealDelay:140,drawerImplementation:'custom',drawerGlassEffect:true};
+const variants = ['A','B','C'];
+let variant = new URLSearchParams(location.search).get('variant') || 'A';
+if (!variants.includes(variant)) variant = 'A';
+let section = variant==='C'?'home':'details';
+const descriptions = {A:['A. Grouped sections','Everything on one page. Scrolling comes first; less-used controls stay folded.'],B:['B. Category tabs','One category at a time. Less scrolling, with an extra click to change categories.'],C:['C. Compact overview','Common choices first. Open a settings page only when you need it.']};
+const groupNames = {details:'Details',watching:'Watching',distractions:'Distractions',advanced:'Advanced'};
+function toggle(key,title,help='') {
+ return `<label class="row"><span><strong>${title}</strong>${help?`<small>${help}</small>`:''}</span><input class="toggle" type="checkbox" data-key="${key}" ${state[key]?'checked':''}></label>`;
+}
+function select(key,title,options,help='') {
+ return `<label class="row"><span><strong>${title}</strong>${help?`<small>${help}</small>`:''}</span><select data-key="${key}">${options.map(([value,label])=>`<option value="${value}" ${state[key]===value?'selected':''}>${label}</option>`).join('')}</select></label>`;
+}
+function brand() {
+ return '<header class="brand"><div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="13" rx="3"/><path d="m10 8 5 3-5 3zM7 21h10"/></svg></div><div><h2>YouTube Zen</h2><p>Make room for the video</p></div></header>';
+}
+function behavior() {
+ return `<div class="section"><h3>When you scroll down</h3><div class="choice-group"><button class="choice" data-behavior="page" aria-pressed="${state.scrollBehavior==='page'}"><strong><i class="indicator"></i>Scroll page</strong><small>See the details below<br>the video.</small></button><button class="choice" data-behavior="card" aria-pressed="${state.scrollBehavior==='card'}"><strong><i class="indicator"></i>Open side card</strong><small>Keep watching with<br>details beside it.</small></button></div>${scene()}</div>`;
+}
+function scene() {
+ const card = state.scrollBehavior==='card';
+ const shapes = card?'<rect x="5" y="5" width="35" height="30" rx="2" fill="#56565f"/><rect x="44" y="5" width="13" height="30" rx="2" fill="#c8d4b4"/>':'<rect x="7" y="-9" width="48" height="30" rx="2" fill="#56565f"/><path d="M8 28h35M8 33h43" stroke="#c8d4b4" stroke-width="3"/>';
+ return `<div class="example"><div class="scene" aria-hidden="true"><svg viewBox="0 0 62 40"><g ${card&&state.sideHoverPosition==='left'?'transform="translate(62 0) scale(-1 1)"':''}>${shapes}</g></svg></div><p>${card?'<strong>The video stays visible.</strong><br>Channel, likes, description, and comments open in a side card.':'<strong>The video scrolls out of view.</strong><br>Channel, likes, description, and comments stay below it.'}</p></div>`;
+}
+function detailsSettings() {
+ return behavior()+(state.scrollBehavior==='card'?`<div class="subsection">${select('sideHoverPosition','Card side',[['left','Left'],['right','Right']])}${select('extraTrigger','Also open with',[['none','Scroll only'],['button','Edge button'],['hover','Edge hover']])}</div>`:'');
+}
+function watchingSettings() {
+ return `<div class="rows">${toggle('autoZen','Start videos in Zen','Fill the window automatically')}${toggle('shortcutEnabled','Use T to toggle Zen')}${toggle('revealPlaylistOnHover','Allow playlist access','Available on playlist videos')}</div>`;
+}
+function distractionSettings() {
+ return `<div class="rows">${toggle('hideHeader','Hide top bar','Search, navigation, and account')}${state.hideHeader?`<div class="subsection">${toggle('revealHeaderOnHover','Show top bar on hover','Move the pointer to the top edge')}</div>`:''}${toggle('hideRecommendations','Hide recommendations')}${toggle('hideLiveChat','Close live chat','Use YouTube\'s close button')}</div>`;
+}
+function advancedSettings() {
+ const panel = state.scrollBehavior==='card';
+ let html = '<div class="rows">';
+ if (panel && state.revealPlaylistOnHover) {
+  html += select('revealSideLayout','Playlist position',[['separate','Opposite side'],['same','Same side']]);
+  if (state.revealSideLayout==='same' && state.extraTrigger==='hover') html += select('sameSideSplit','Top half opens',[['playlist-top','Playlist'],['details-top','Details']]);
+ }
+ if (panel && state.extraTrigger==='hover') html += `<label class="row"><span><strong>Hover delay</strong><small id="delay-value">${state.hoverRevealDelay} ms</small></span><input type="range" data-key="hoverRevealDelay" aria-label="Hover delay" min="0" max="1000" step="20" value="${state.hoverRevealDelay}"></label>`;
+ if (panel) {
+  html += select('drawerImplementation','Card appearance',[['custom','Zen'],['native','YouTube']]);
+  if (state.drawerImplementation==='custom') html += toggle('drawerGlassEffect','Card shadow');
+ } else html += '<p><small>Card placement, appearance, and hover timing appear here when you choose a side card.</small></p>';
+ return html+'</div>';
+}
+function content(key) {
+ return {details:detailsSettings,watching:watchingSettings,distractions:distractionSettings,advanced:advancedSettings}[key]();
+}
+function footer() {
+ return `<footer class="footnote"><span>Prototype · changes are not saved</span><span>${state.shortcutEnabled?'<kbd>T</kbd> Toggle Zen':'Shortcut off'}</span></footer>`;
+}
+function variantA() {
+ return brand()+`<div class="stack">${detailsSettings()}<section class="section"><h3>Watching</h3>${watchingSettings()}</section><section class="section"><h3>Hide distractions</h3>${distractionSettings()}</section><details class="advanced"><summary>Advanced settings</summary><div>${advancedSettings()}</div></details></div>`+footer();
+}
+function variantB() {
+ const tabs = Object.keys(groupNames).map(key=>`<button data-section="${key}" ${section===key?'aria-current="page"':''}>${groupNames[key]}</button>`).join('');
+ return brand()+`<nav class="tabnav" aria-label="Settings categories">${tabs}</nav><div class="tab-body">${content(section)}</div>`+footer();
+}
+function navrow(key,title,subtitle) {
+ return `<button class="navrow" data-section="${key}"><span><strong>${title}</strong><small>${subtitle}</small></span><span class="chevron" aria-hidden="true">›</span></button>`;
+}
+function variantC() {
+ if (section!=='home') return brand()+`<div class="stack"><button class="back" data-section="home">‹ All settings</button><h3 class="heading">${groupNames[section]}</h3>${content(section)}</div>`+footer();
+ const hidden = [state.hideHeader,state.hideRecommendations,state.hideLiveChat].filter(Boolean).length;
+ return brand()+`<div class="home-main">${toggle('autoZen','Start videos in Zen')}${behavior()}</div><div>${navrow('details','Details settings',state.scrollBehavior==='page'?'Scroll page':`${state.sideHoverPosition==='left'?'Left':'Right'} side card`)}${navrow('distractions','Hide distractions',`${hidden} of 3 hidden`)}${navrow('watching','Watching',state.shortcutEnabled?'T shortcut enabled':'T shortcut disabled')}${navrow('advanced','Advanced settings','Playlist, appearance, and hover timing')}</div>`+footer();
+}
+function render() {
+ document.getElementById('layout-title').textContent=descriptions[variant][0];
+ document.getElementById('layout-note').textContent=descriptions[variant][1];
+ document.getElementById('popup').innerHTML={A:variantA,B:variantB,C:variantC}[variant]();
+ document.getElementById('state').textContent=JSON.stringify(state,null,2);
+ document.querySelectorAll('[data-variant]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.variant===variant)));
+}
+function changeVariant(next) {
+ variant=next;section=variant==='C'?'home':'details';
+ const url=new URL(location.href);url.searchParams.set('variant',variant);
+ try {history.replaceState(null,'',url);} catch { /* Embedded preview may block URL changes. */ }
+ render();
+}
+document.addEventListener('click',event=>{
+ const button=event.target.closest('button');if(!button)return;
+ if(button.dataset.variant)changeVariant(button.dataset.variant);
+ else if(button.dataset.cycle)changeVariant(variants[(variants.indexOf(variant)+Number(button.dataset.cycle)+3)%3]);
+ else if(button.dataset.section){section=button.dataset.section;render();}
+ else if(button.dataset.behavior){state.scrollBehavior=button.dataset.behavior;render();}
+});
+document.addEventListener('change',event=>{
+ const input=event.target;if(!input.dataset.key)return;
+ const open=Boolean(document.querySelector('.advanced[open]'));
+ state[input.dataset.key]=input.type==='checkbox'?input.checked:input.type==='range'?Number(input.value):input.value;
+ render();if(open)document.querySelector('.advanced')?.setAttribute('open','');
+ const restored=document.querySelector(`[data-key="${input.dataset.key}"]`);restored?.focus();
+});
+document.addEventListener('input',event=>{
+ if(event.target.type!=='range')return;
+ state.hoverRevealDelay=Number(event.target.value);document.getElementById('delay-value').textContent=state.hoverRevealDelay+' ms';
+ document.getElementById('state').textContent=JSON.stringify(state,null,2);
+});
+document.addEventListener('keydown',event=>{
+ if(event.target.closest('input,select,textarea,button,[contenteditable=true]'))return;
+ if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();changeVariant(variants[(variants.indexOf(variant)+(event.key==='ArrowRight'?1:2))%3]);}
+});
+render();
+</script>
+</body>
+</html>

@@ -1,5 +1,23 @@
 # YouTube Zen Theater Product Document
 
+## Current interaction contract, October 2026
+
+This contract supersedes the older visual specification and copy reference below.
+
+- Playback offers automatic startup in Zen or native YouTube theater. The existing `autoZen` key remains the master toggle; `startupMode` defaults to `zen`. Native theater startup is a one-time request for each video, not a continuously enforced mode.
+- The Zen shortcut is configurable as `T` or `Shift+T`. `zenShortcut` defaults to `t` for compatibility. With `shift-t`, plain `T` yields an active Zen session and passes through to YouTube. `shortcutEnabled` remains the master shortcut toggle.
+
+- Natural page scrolling is the default. The video moves up and out of view; native channel controls, actions, description, and comments remain below it. Page mode preserves native column alignment, spacing, and background; card shadows and sizing apply only in card mode.
+- Details choose Below video or Side card, then an independent Left/Right side and Scroll/Button/Hover/Scroll + hover opening method. Edge buttons remain available for every card.
+- Playlist independently chooses On page, Side card, or Hidden, with its own side and Button/Hover opening method. Zen/YouTube appearance never changes these locations.
+- The popup uses General, Distractions, and Appearance tabs, with a compact interactive layout preview above them. Preview actions do not change settings. Its expanded scene shares the600px popup height budget with settings.
+- New nullable stored keys `detailsLocation`, `detailsSide`, `detailsTrigger`, `playlistLocation`, `playlistSide`, `playlistTrigger` override legacy preferences individually. Until set, runtime helpers derive the original behavior from old keys. No automatic storage rewrite occurs on load. Changing appearance also saves the effective playlist location to preserve placement during migration.
+- Legacy setting descriptions below remain a compatibility reference, superseded by the content-first UI described here. Hover delay and shared-edge top/bottom regions remain available when relevant. Tabs support arrow keys, Home, and End.
+- Hiding recommendations leaves the sidebar layout box in place. Only recommendation content is hidden; details retain their native width. Playlist drawers move only the playlist renderer, so visible recommendation siblings remain in the page.
+- Native ambient lighting and player-control gradients are preserved. Video sizing retains `object-fit: contain`.
+- Hover previews do not activate while pointing at panel buttons. Clicking a hover-open panel pins it open; a second click closes it.
+- Preserve the original popup visual style:372px width, near-black background, red controls, original typography, bordered rows, and SVG mark. Category tabs change organization only; full original feature parity is the baseline. `popup/popup.html` and `popup/popup.css` are the current visual reference.
+
 ## Purpose
 
 YouTube Zen Theater is a Chrome Manifest V3 extension that turns YouTube watch and live pages into a focused theater-viewing experience. The product removes the usual surrounding YouTube chrome from the first viewport, makes the video feel like the primary surface, and keeps useful YouTube controls available through intentional reveal interactions.
@@ -21,7 +39,7 @@ A YouTube extension that automatically opens videos in a distraction-free viewpo
 
 - Keep the video primary.
 - Hide distractions by default.
-- Reveal secondary surfaces only on edge hover or drawer button.
+- Reach video details through natural page scrolling by default. Offer a side card that opens when scrolling over the video, with optional edge hover and button access.
 - Use YouTube's native controls instead of replacing core playback behavior.
 - Preserve a fast, compact extension popup.
 - Make every setting understandable without onboarding text.
@@ -32,7 +50,7 @@ A YouTube extension that automatically opens videos in a distraction-free viewpo
 - Manifest version: Chrome MV3
 - Main content script: `src/content.js`
 - Main content stylesheet: `src/zen.css`
-- Popup UI: `popup/popup.html`, `popup/popup.css`, `popup/popup.js`
+- Popup UI: `popup/popup.html`, `popup/popup.css`, `popup/popup.js`, `popup/navigation.js`
 - Storage: `chrome.storage.sync`
 - Host scope: `https://www.youtube.com/*` and `https://youtube.com/*`
 - Permissions: `storage`
@@ -50,28 +68,30 @@ When Zen mode is active, the extension adds state classes to the document root a
 
 Expected active state:
 
-- Page background becomes black.
+- Page background follows YouTube's native theme.
 - Browser scrollbars are visually hidden.
 - YouTube is forced into native theater mode.
 - The YouTube player fills the viewport width and height.
-- Title, channel row, actions, description, comments, and other below-player content move into a revealable side panel.
+- By default, title, channel row, actions, description, and comments stay below the player in normal document flow. Scrolling moves the video out of view.
+- Optional card mode moves the native below-player content into a left or right side card. Downward scrolling over the video opens it; later wheel gestures over the video scroll it. Scrolling inside native content is not intercepted. Escape or the edge button closes it.
+- Entering card mode returns the page to the video before locking document scrolling.
 - Recommendations are hidden by default when the setting is enabled.
 - Masthead, search, guide, profile controls, and navigation are hidden by default when the setting is enabled.
-- Cinematic backdrop elements are suppressed.
+- Native ambient lighting follows YouTube's own setting, and playback-control gradients remain available.
 - Live chat is closed through YouTube's native close/hide control when possible.
 
 ### 2. Extension Popup / Popover
 
-The browser-action popup is the settings control surface. It is a compact dark panel, 372px wide, organized into grouped controls.
+The browser-action popup is the settings control surface. It is a compact dark panel, 372px wide, organized into General, Distractions, and Appearance tabs. Tabs support arrow keys, Home, and End. Settings persist immediately. Content placement and triggers are independent; dormant card preferences survive switching back to page placement. A compact sample layout previews these choices without writing settings.
 
 The popup is not a marketing page and should not contain onboarding copy. It should feel like a quiet utility control panel.
 
 ### 3. Reveal Drawers / Hover Panels
 
-On the YouTube page, hidden surfaces can reappear in two modes:
+Natural page scrolling is the default details interaction. In optional card mode, scrolling down over the video opens details. Additional edge controls remain available:
 
 - Drawer mode: small edge buttons open or close panels.
-- Hover mode: invisible edge zones reveal panels when the pointer rests near the edge.
+- Hover mode: invisible edge zones reveal temporary panels when the pointer rests near the edge. Clicking a panel button pins it open; clicking again closes it. Hovering the button itself does not open a panel.
 
 The reveal system supports:
 
@@ -111,7 +131,7 @@ Behavior:
 
 - Searches multiple YouTube chat button selectors.
 - Falls back to button text such as "hide chat" or "close chat".
-- Also runs inside YouTube live-chat frame pages.
+- The top-frame content script probes an accessible YouTube live-chat iframe document when available.
 - Retries a limited number of times because YouTube loads chat asynchronously.
 
 ### Top Bar
@@ -148,11 +168,11 @@ Visual intent:
 - The top bar should feel temporarily summoned.
 - It should not permanently push down or resize the main video experience.
 
-### Side Details
+### Details access
 
-Default: on.
+Default: Scroll page. Optional: Open side card.
 
-Controls whether title, channel, actions, description, and comments can be revealed from a side panel.
+Controls whether title, channel, actions, description, and comments stay in page flow or open in a side card when scrolling over the video.
 
 The panel content comes from YouTube's native below-player region (`#below`) rather than a custom rebuilt details view.
 
@@ -185,9 +205,9 @@ Default: `Drawer`.
 Options:
 
 - `Drawer`: show explicit edge drawer buttons for details and playlist panels.
-- `Hover`: reveal details and playlist panels from hover zones at the screen edges.
+- `Hover`: reveal details and playlist panels from hover zones at the screen edges, with keyboard-focusable extension buttons for direct access.
 
-Drawer mode is more deliberate and easier to discover. Hover mode is more minimal and keeps controls visually hidden.
+Drawer mode is more deliberate and easier to discover. Hover mode keeps edge reveal zones but retains small keyboard-discoverable extension buttons.
 
 ### Drawer Build
 
@@ -195,12 +215,12 @@ Default: `Zen`.
 
 Options:
 
-- `Zen`: custom Zen-styled drawer treatment, including custom positioning, blur/solid appearance, rounded corners, dark panel styling, and styled native YouTube controls.
+- `Zen`: custom Zen-styled drawer treatment, including custom positioning, accented-shadow/solid appearance, rounded corners, dark panel styling, and styled native YouTube controls.
 - `Native`: uses a more native YouTube surface for the drawer behavior.
 
 The product should prioritize the Zen custom style for the intended redesigned experience.
 
-### Liquid Glass
+### Drawer Surface
 
 Default: on.
 
@@ -208,8 +228,8 @@ Controls the drawer visual treatment in custom Zen mode.
 
 When enabled:
 
-- Drawers use a transparent, blurred, glass-like dark surface.
-- The panel should feel layered over the video rather than like a separate page column.
+- Drawers use a near-opaque dark surface with an inset highlight and stronger layered shadow.
+- The panel should feel layered over the video rather than like a separate page column. No blur filter is applied.
 
 When disabled:
 
@@ -431,7 +451,7 @@ Reveal:
 Appearance:
 
 1. Drawer build
-2. Liquid glass
+2. Drawer surface
 
 ## Settings Data Model
 
@@ -441,6 +461,9 @@ Current defaults:
 
 ```json
 {
+  "scrollBehavior": "page",
+  "startupMode": "zen",
+  "zenShortcut": "t",
   "autoZen": true,
   "hideLiveChat": true,
   "hideHeader": true,
@@ -475,17 +498,18 @@ These are not exposed in the current popup UI and should not be treated as first
 
 | Setting | UI control | Default | Behavior |
 | --- | --- | --- | --- |
+| `scrollBehavior` | Select | `page` | Natural page scrolling or scroll-open side card. |
 | `autoZen` | Checkbox | On | Automatically activates Zen on watch/live pages. |
 | `shortcutEnabled` | Checkbox | On | Enables `t` keyboard toggle outside editable fields. |
 | `hideLiveChat` | Checkbox | On | Clicks YouTube native chat close/hide controls. |
 | `hideHeader` | Checkbox | On | Hides masthead, guide, and top navigation surfaces. |
 | `hideRecommendations` | Checkbox | On | Hides recommendations/secondary results while preserving playlist reveal when needed. |
 | `revealHeaderOnHover` | Checkbox | On | Allows masthead to reappear from top edge hover. |
-| `revealMetaOnHover` | Checkbox | On | Allows below-video details/comments panel reveal. |
+| `revealMetaOnHover` | Checkbox | On | Original Side details enable/disable toggle for card mode. |
 | `revealPlaylistOnHover` | Checkbox | On | Allows playlist panel reveal when playlist context exists. |
 | `sideRevealMode` | Select | `drawer` | Chooses drawer buttons or hover-edge reveal. |
 | `drawerImplementation` | Select | `custom` | Chooses Zen custom drawer or native YouTube surface. |
-| `drawerGlassEffect` | Checkbox | On | Uses transparent blur glass for custom drawers. |
+| `drawerGlassEffect` | Checkbox | On | Uses accented inset-shadow styling for custom drawers; the key is retained for stored-setting compatibility. |
 | `revealSideLayout` | Select | `separate` | Chooses opposite-side panels or shared-side panels. |
 | `sideHoverPosition` | Select | `right` | Chooses details side or shared side. |
 | `sameSideSplit` | Select | `playlist-top` | Chooses which panel uses the top half when both panels share a side. |
@@ -536,7 +560,7 @@ YouTube is a single-page app, so the content script listens for:
 - `ytd-player-updated`
 - `popstate`
 - `visibilitychange`
-- MutationObserver changes on theater/collapsed/hidden attributes
+- Targeted live-chat host/owner mutations for late close controls and frame replacement
 
 The design implication is that the UI should tolerate delayed application and brief YouTube DOM changes.
 
@@ -567,8 +591,8 @@ When one panel opens, the other panel closes to avoid overlap.
 
 When `Open style` is `Drawer`:
 
-- Details drawer button is created if Side details is enabled.
-- Playlist drawer button is created if Playlist is enabled and playlist context exists.
+- Details drawer button is created if Side details is enabled, including in Hover mode for keyboard access.
+- Playlist drawer button is created if Playlist is enabled and playlist context exists, including in Hover mode for keyboard access.
 - Buttons are native `<button>` elements appended to the document root.
 - Details button ARIA label alternates between "Show video details" and "Hide video details".
 - Playlist button ARIA label alternates between "Show playlist" and "Hide playlist".
@@ -587,8 +611,8 @@ The details drawer should feel like a refined side sheet over the video.
 Expected custom Zen treatment:
 
 - Fixed-position side panel.
-- Dark translucent or solid background depending on Liquid Glass.
-- Blur when glass is enabled.
+- Near-opaque dark background with either an inset-highlight shadow or a simpler solid shadow.
+- No blur filter; the option changes shadow/appearance only.
 - Rounded outer corners.
 - Scrollable content.
 - High contrast white text.
@@ -617,6 +641,7 @@ Native mode should preserve more of YouTube's built-in secondary/below layout. I
 - Drawer buttons are real buttons with `aria-label` and `aria-expanded`.
 - Hidden hover zones are `aria-hidden`.
 - Focus-visible outlines are high contrast.
+- Escape closes an open extension panel and returns focus to its button without trapping focus globally.
 - Keyboard shortcut avoids editable fields.
 - Recreated design should keep native semantics wherever possible.
 
@@ -654,7 +679,7 @@ Reveal:
 Appearance:
 
 - `Drawer build` - `Use Zen drawer or YouTube surface`
-- `Liquid glass` - `Transparent blur effect`
+- `Drawer surface` - `Use accented shadow styling`
 
 Select option labels:
 
@@ -695,7 +720,7 @@ The popup must include:
 - Playback group with Auto Zen and T shortcut toggles.
 - Content group with Live chat, Top bar, and Recommendations toggles.
 - Reveal group with Top hover, Side details, Playlist toggles, Open style select, and Advanced reveal tuning details panel.
-- Appearance group with Drawer build select and Liquid glass toggle.
+- Appearance group with Drawer build select and Drawer surface toggle.
 
 The YouTube page experience to support:
 
