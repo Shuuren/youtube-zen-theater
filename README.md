@@ -56,3 +56,7 @@ python3 scripts/diagnose_zen_toggle_resize.py \
 ```
 
 The command writes `diagnostics/zen-toggle-resize/report.json` on pass, failure, or a blocked prerequisite check. Reports contain only run status, minimal viewport/player geometry, and error text; screenshots are written only for failed geometry cycles.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Original source is under the [MIT License](LICENSE). The development check above is what CI runs.

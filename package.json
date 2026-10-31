@@ -1,6 +1,7 @@
 {
   "name": "youtube-zen-mode-extension",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "lint": "oxlint .",
     "typecheck": "tsc --noEmit",
