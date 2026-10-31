@@ -5,373 +5,225 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="popup.css">
     <link rel="stylesheet" href="preview.css">
-    <title>
-      YouTube Zen
-    </title>
+    <title>YouTube Zen</title>
   </head>
   <body>
     <main class="panel">
       <header class="header">
         <div class="mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32" role="img">
-            <rect x="3" y="5" width="26" height="18" rx="3">
-            </rect>
-            <path d="M14 11l8 4-8 5z">
-            </path>
-            <path d="M7 27h18">
-            </path>
+          <svg viewBox="0 0 24 24">
+            <rect x="2.5" y="5" width="19" height="14" rx="2"></rect>
+            <path d="M10 9.2v5.6l5-2.8z"></path>
           </svg>
         </div>
-        <div>
-          <h1>
-            YouTube Zen
-          </h1>
-          <p>
-            Fullscreen theater controls
-          </p>
-        </div>
+        <h1>YouTube Zen</h1>
       </header>
+
       <section class="layout-preview" aria-label="Interactive layout preview">
-        <div class="preview-toolbar">
-          <h2>
-            Try your layout
-          </h2>
-          <div>
-            <button type="button" id="preview-scroll">
-              Scroll
-              <span aria-hidden="true">
-                ↓
-              </span>
-            </button>
-            <button type="button" id="preview-expand" aria-expanded="false" aria-controls="preview-scene">
-              Expand
-            </button>
-          </div>
+        <div class="preview-scene" id="preview-scene" tabindex="0" aria-label="Sample video layout. Scroll to try details; use drawer buttons to try cards."></div>
+        <div class="preview-caption">
+          <p class="preview-summary" id="preview-summary"></p>
+          <button type="button" id="preview-scroll">Scroll</button>
+          <button type="button" id="preview-expand" aria-expanded="false" aria-controls="preview-scene">Expand</button>
         </div>
-        <div class="preview-scene" id="preview-scene" tabindex="0" aria-label="Sample video layout. Scroll to try details; use drawer buttons to try cards.">
-        </div>
-        <div class="preview-summary" id="preview-summary">
-        </div>
-        <p class="preview-feedback" id="preview-feedback" role="status" aria-live="polite">
-          Sample layout. Preview actions do not change your settings.
-        </p>
+        <p class="preview-feedback" id="preview-feedback" role="status" aria-live="polite">Sample layout. Preview actions do not change your settings.</p>
       </section>
-      <nav class="tabs" role="tablist" aria-label="Settings categories">
-        <button id="tab-general" type="button" role="tab" aria-controls="general" aria-selected="true">
-          General
-        </button>
-        <button id="tab-distractions" type="button" role="tab" aria-controls="distractions" aria-selected="false" tabindex="-1">
-          Distractions
-        </button>
-        <button id="tab-appearance" type="button" role="tab" aria-controls="appearance" aria-selected="false" tabindex="-1">
-          Appearance
-        </button>
-      </nav>
-      <section class="settings" id="general" role="tabpanel" aria-labelledby="tab-general">
-        <fieldset class="group" >
-          <legend>
-            Video details
-          </legend>
-          <label class="row" >
-            <span>
-              <strong>
-                Location
-              </strong>
-            </span>
-            <select id="detailsLocation">
-              <option value="page">
-                Below video
-              </option>
-              <option value="card">
-                Side card
-              </option>
-            </select>
-          </label>
-          <div class="card-options" data-card-options="details">
-            <label class="row" >
-              <span>
-                <strong>
-                  Side
-                </strong>
-              </span>
-              <select id="detailsSide">
-                <option value="left">
-                  Left
-                </option>
-                <option value="right">
-                  Right
-                </option>
+
+      <div class="stack">
+        <section class="block" aria-labelledby="layout-title">
+          <h2 id="layout-title">Layout</h2>
+          <fieldset class="sheet">
+            <legend>Video details</legend>
+            <label class="row">
+              <span>Where</span>
+              <select id="detailsLocation" aria-describedby="details-help">
+                <option value="page">Below the video</option>
+                <option value="card">Side card</option>
               </select>
             </label>
-            <label class="row" >
-              <span>
-                <strong>
-                  Open with
-                </strong>
-              </span>
-              <select id="detailsTrigger">
-                <option value="scroll">
-                  Scroll
-                </option>
-                <option value="button">
-                  Button
-                </option>
-                <option value="hover">
-                  Hover
-                </option>
-                <option value="scroll-hover">
-                  Scroll + hover
-                </option>
+            <div class="card-options" data-card-options="details">
+              <label class="row">
+                <span>Edge</span>
+                <select id="detailsSide">
+                  <option value="left">Left</option>
+                  <option value="right">Right</option>
+                </select>
+              </label>
+              <label class="row">
+                <span>Opens with</span>
+                <select id="detailsTrigger">
+                  <option value="scroll">Scroll</option>
+                  <option value="button">Button</option>
+                  <option value="hover">Hover</option>
+                  <option value="scroll-hover">Scroll + hover</option>
+                </select>
+              </label>
+            </div>
+            <p class="note" id="details-help"></p>
+          </fieldset>
+
+          <fieldset class="sheet">
+            <legend>Playlist</legend>
+            <label class="row">
+              <span>Where</span>
+              <select id="playlistLocation" aria-describedby="playlist-help">
+                <option value="page">On page</option>
+                <option value="card">Side card</option>
+                <option value="hidden">Hidden</option>
               </select>
             </label>
-            <p class="explanation">
-              The drawer button is always available.
-            </p>
+            <div class="card-options" data-card-options="playlist">
+              <label class="row">
+                <span>Edge</span>
+                <select id="playlistSide">
+                  <option value="left">Left</option>
+                  <option value="right">Right</option>
+                </select>
+              </label>
+              <label class="row">
+                <span>Opens with</span>
+                <select id="playlistTrigger">
+                  <option value="button">Button</option>
+                  <option value="hover">Hover</option>
+                </select>
+              </label>
+            </div>
+            <p class="note" id="playlist-help"></p>
+          </fieldset>
+
+          <fieldset class="sheet" data-hover-options>
+            <legend>Hover</legend>
+            <label class="row row-range">
+              <span>Delay</span>
+              <output data-range-value="hoverRevealDelay">140ms</output>
+              <input type="range" id="hoverRevealDelay" min="0" max="1000" step="20">
+            </label>
+            <label class="row" data-shared-hover>
+              <span>Top of the edge</span>
+              <select id="sameSideSplit">
+                <option value="details-top">Video details</option>
+                <option value="playlist-top">Playlist</option>
+              </select>
+            </label>
+            <p class="note" data-shared-hover>The other card uses the lower half of that edge.</p>
+          </fieldset>
+        </section>
+
+        <section class="block" id="quiet" aria-labelledby="quiet-title">
+          <h2 id="quiet-title">Quiet</h2>
+          <p class="lede" id="quiet-summary">10 distractions stay hidden.</p>
+          <div id="site-filters">
+            <details class="fold" data-filter-group="watch">
+              <summary>
+                <span class="fold-name">Around the video</span>
+                <span class="fold-meta"><em data-fold-count>5 hidden</em></span>
+              </summary>
+              <div class="fold-body">
+                <label class="row">
+                  <span>Hide recommendations<small>Leaves the sidebar space empty</small></span>
+                  <input type="checkbox" id="hideRecommendations" data-quiet data-quiet-label="recommendations">
+                </label>
+                <label class="row">
+                  <span>Close live chat<small>Uses YouTube’s close control</small></span>
+                  <input type="checkbox" id="hideLiveChat" data-quiet data-quiet-label="live chat">
+                </label>
+              </div>
+            </details>
+
+            <details class="fold" data-filter-group="browse">
+              <summary>
+                <span class="fold-name">Home and search</span>
+                <span class="fold-meta"><em data-fold-count>3 hidden</em></span>
+              </summary>
+              <div class="fold-body"></div>
+            </details>
+
+            <details class="fold" data-filter-group="comments">
+              <summary>
+                <span class="fold-name">Comments</span>
+                <span class="fold-meta"><em data-fold-count>Shown</em></span>
+              </summary>
+              <div class="fold-body"></div>
+            </details>
+
+            <details class="fold" data-filter-group="chrome">
+              <summary>
+                <span class="fold-name">Page chrome</span>
+                <span class="fold-meta"><em data-fold-count>2 hidden</em></span>
+              </summary>
+              <div class="fold-body">
+                <label class="row">
+                  <span>Hide top bar<small>Masthead, search, and the guide</small></span>
+                  <input type="checkbox" id="hideHeader" data-quiet data-quiet-label="the top bar">
+                </label>
+                <label class="row row-follow" data-when="header-hidden">
+                  <span>Reveal on hover<small>While the top bar is hidden</small></span>
+                  <input type="checkbox" id="revealHeaderOnHover">
+                </label>
+              </div>
+            </details>
           </div>
-          <p class="explanation" id="details-help">
-          </p>
-        </fieldset>
-        <fieldset class="group" >
-          <legend>
-            Playlist
-          </legend>
-          <label class="row" >
-            <span>
-              <strong>
-                Location
-              </strong>
-            </span>
-            <select id="playlistLocation">
-              <option value="page">
-                On page
-              </option>
-              <option value="card">
-                Side card
-              </option>
-              <option value="hidden">
-                Hidden
-              </option>
-            </select>
-          </label>
-          <div class="card-options" data-card-options="playlist">
-            <label class="row" >
-              <span>
-                <strong>
-                  Side
-                </strong>
-              </span>
-              <select id="playlistSide">
-                <option value="left">
-                  Left
-                </option>
-                <option value="right">
-                  Right
-                </option>
+        </section>
+
+        <details class="fold" data-filter-group="playback">
+          <summary>
+            <span class="fold-name">Playback</span>
+            <span class="fold-meta"><em id="playback-summary">Starts in Zen · Autoplay off</em></span>
+          </summary>
+          <div class="fold-body">
+            <label class="row">
+              <span>Start automatically</span>
+              <input type="checkbox" id="autoZen">
+            </label>
+            <label class="row row-follow">
+              <span>Start in</span>
+              <select id="startupMode">
+                <option value="zen">Zen mode</option>
+                <option value="theater">YouTube theater</option>
               </select>
             </label>
-            <label class="row" >
-              <span>
-                <strong>
-                  Open with
-                </strong>
-              </span>
-              <select id="playlistTrigger">
-                <option value="button">
-                  Button
-                </option>
-                <option value="hover">
-                  Hover
-                </option>
+            <label class="row">
+              <span>Zen shortcut</span>
+              <input type="checkbox" id="shortcutEnabled">
+            </label>
+            <label class="row row-follow">
+              <span>Shortcut key<small>Shift+T keeps YouTube’s T</small></span>
+              <select id="zenShortcut">
+                <option value="t">T</option>
+                <option value="shift-t">Shift+T</option>
               </select>
             </label>
-            <p class="explanation">
-              The drawer button is always available.
-            </p>
           </div>
-          <p class="explanation" id="playlist-help">
-          </p>
-        </fieldset>
-        <fieldset class="group" data-hover-options>
-          <legend>
-            Hover behavior
-          </legend>
-          <label class="row">
-            <span>
-              <strong>
-                Hover delay
-              </strong>
-              <small>
-                <output data-range-value="hoverRevealDelay">
-                  140ms
-                </output>
-              </small>
-            </span>
-            <input type="range" id="hoverRevealDelay" min="0" max="1000" step="20">
-          </label>
-          <label class="row" data-shared-hover>
-            <span>
-              <strong>
-                Top edge region
-              </strong>
-            </span>
-            <select id="sameSideSplit">
-              <option value="details-top">
-                Video details
-              </option>
-              <option value="playlist-top">
-                Playlist
-              </option>
-            </select>
-          </label>
-          <p class="explanation" data-shared-hover>
-            Both cards share an edge. The other uses the bottom half.
-          </p>
-        </fieldset>
-        <fieldset class="group" >
-          <legend>
-            Playback
-          </legend>
-          <label class="row">
-            <span>
-              <strong>
-                Start automatically
-              </strong>
-              <small>
-                Apply automatically on videos
-              </small>
-            </span>
-            <input type="checkbox" id="autoZen">
-          </label>
-          <label class="row">
-            <span><strong>Start in</strong></span>
-            <select id="startupMode" aria-label="Automatic startup mode">
-              <option value="zen">Zen mode</option>
-              <option value="theater">YouTube theater</option>
-            </select>
-          </label>
-          <label class="row">
-            <span>
-              <strong>
-                Zen shortcut
-              </strong>
-              <small>
-                Enable the selected Zen shortcut
-              </small>
-            </span>
-            <input type="checkbox" id="shortcutEnabled">
-          </label>
-          <label class="row">
-            <span><strong>Shortcut key</strong><small>Shift+T keeps YouTube's native T</small></span>
-            <select id="zenShortcut" aria-label="Zen shortcut key">
-              <option value="t">T</option>
-              <option value="shift-t">Shift+T</option>
-            </select>
-          </label>
-        </fieldset>
-      </section>
-      <section class="settings" id="distractions" role="tabpanel" aria-labelledby="tab-distractions" hidden>
-        <fieldset class="group" >
-          <legend>
-            Navigation
-          </legend>
-          <label class="row">
-            <span>
-              <strong>
-                Hide top bar
-              </strong>
-            </span>
-            <input type="checkbox" id="hideHeader">
-          </label>
-          <label class="row">
-            <span>
-              <strong>
-                Reveal on top hover
-              </strong>
-              <small>
-                Used while the top bar is hidden
-              </small>
-            </span>
-            <input type="checkbox" id="revealHeaderOnHover">
-          </label>
-        </fieldset>
-        <fieldset class="group" >
-          <legend>
-            Other content
-          </legend>
-          <label class="row">
-            <span>
-              <strong>
-                Hide recommendations
-              </strong>
-              <small>
-                Leave their sidebar space empty
-              </small>
-            </span>
-            <input type="checkbox" id="hideRecommendations">
-          </label>
-          <label class="row">
-            <span>
-              <strong>
-                Close live chat
-              </strong>
-              <small>
-                Use YouTube’s native close control
-              </small>
-            </span>
-            <input type="checkbox" id="hideLiveChat">
-          </label>
-        </fieldset>
-        <fieldset class="group" id="site-filters">
-          <legend>
-            Across YouTube
-          </legend>
-        </fieldset>
-      </section>
-      <section class="settings" id="appearance" role="tabpanel" aria-labelledby="tab-appearance" hidden>
-        <fieldset class="group" >
-          <legend>
-            Card styling
-          </legend>
-          <label class="row" >
-            <span>
-              <strong>
-                Surface
-              </strong>
-            </span>
-            <select id="drawerImplementation">
-              <option value="custom">
-                Zen
-              </option>
-              <option value="native">
-                YouTube
-              </option>
-            </select>
-          </label>
-          <label class="row">
-            <span>
-              <strong>
-                Accented shadow
-              </strong>
-            </span>
-            <input type="checkbox" id="drawerGlassEffect">
-          </label>
-        </fieldset>
-        <p class="explanation">
-          Appearance changes styling. Your content stays where you placed it.
-        </p>
-      </section>
-      <p id="status" class="status" role="status" aria-live="polite">
-      </p>
+        </details>
+
+        <details class="fold">
+          <summary>
+            <span class="fold-name">Look</span>
+            <span class="fold-meta"><em id="look-summary">Zen surface · Accented shadow</em></span>
+          </summary>
+          <div class="fold-body">
+            <label class="row">
+              <span>Surface</span>
+              <select id="drawerImplementation">
+                <option value="custom">Zen</option>
+                <option value="native">YouTube</option>
+              </select>
+            </label>
+            <label class="row">
+              <span>Accented shadow</span>
+              <input type="checkbox" id="drawerGlassEffect">
+            </label>
+            <p class="note">Styling only. Placement stays where you set it.</p>
+          </div>
+        </details>
+      </div>
+
+      <p id="status" class="status" role="status" aria-live="polite"></p>
     </main>
-    <script src="../src/settings.js">
-    </script>
-    <script src="preview-render.js">
-    </script>
-    <script src="preview.js">
-    </script>
-    <script src="popup.js">
-    </script>
-    <script src="navigation.js">
-    </script>
+    <script src="../src/settings.js"></script>
+    <script src="preview-render.js"></script>
+    <script src="preview.js"></script>
+    <script src="popup.js"></script>
+    <script src="navigation.js"></script>
   </body>
 </html>

@@ -51,12 +51,15 @@ type YtztSettings = {
   disableAutoplay: boolean;
 };
 
+type YtztFilterGroup = 'watch' | 'browse' | 'comments' | 'chrome' | 'playback';
+
 interface DistractionFilter {
   key: YtztFilterKey;
   label: string;
   detail: string;
   rootClass: string;
   defaultValue: boolean;
+  group: YtztFilterGroup;
 }
 
 interface UnhookFeature {

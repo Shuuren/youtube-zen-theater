@@ -10,13 +10,13 @@ This contract supersedes the older visual specification and copy reference below
 - Natural page scrolling is the default. The video moves up and out of view; native channel controls, actions, description, and comments remain below it. Page mode preserves native column alignment, spacing, and background; card shadows and sizing apply only in card mode.
 - Details choose Below video or Side card, then an independent Left/Right side and Scroll/Button/Hover/Scroll + hover opening method. Edge buttons remain available for every card.
 - Playlist independently chooses On page, Side card, or Hidden, with its own side and Button/Hover opening method. Zen/YouTube appearance never changes these locations.
-- The popup uses General, Distractions, and Appearance tabs, with a compact interactive layout preview above them. Preview actions do not change settings. Its expanded scene shares the600px popup height budget with settings.
+- The popup keeps Layout open: video details and playlist each choose where they sit, then edge and opening method when they are side cards. Quiet groups collapse to a name and a count. Those groups are rendered from `distractionFilters` in `src/settings.js` (`watch`, `browse`, `comments`, `chrome`, `playback`). Playback and Look collapse to the current choice. Preview actions do not change settings. The popover grows with its content and scrolls only past 600px.
 - New nullable stored keys `detailsLocation`, `detailsSide`, `detailsTrigger`, `playlistLocation`, `playlistSide`, `playlistTrigger` override legacy preferences individually. Until set, runtime helpers derive the original behavior from old keys. No automatic storage rewrite occurs on load. Changing appearance also saves the effective playlist location to preserve placement during migration.
-- Legacy setting descriptions below remain a compatibility reference, superseded by the content-first UI described here. Hover delay and shared-edge top/bottom regions remain available when relevant. Tabs support arrow keys, Home, and End.
+- Legacy setting descriptions below remain a compatibility reference, superseded by the content-first UI described here. Hover delay and shared-edge top/bottom regions remain available when relevant. Section summaries support arrow keys, Home, and End.
 - Hiding recommendations leaves the sidebar layout box in place. Only recommendation content is hidden; details retain their native width. Playlist drawers move only the playlist renderer, so visible recommendation siblings remain in the page.
 - Native ambient lighting and player-control gradients are preserved. Video sizing retains `object-fit: contain`.
 - Hover previews do not activate while pointing at panel buttons. Clicking a hover-open panel pins it open; a second click closes it.
-- Preserve the original popup visual style:372px width, near-black background, red controls, original typography, bordered rows, and SVG mark. Category tabs change organization only; full original feature parity is the baseline. `popup/popup.html` and `popup/popup.css` are the current visual reference.
+- Popup visual reference is `popup/popup.html` and `popup/popup.css`: 372px wide, `#0f0f0f` canvas, grouped sheets, red reserved for on-state switches and the sample progress bar. Every stored control stays available. The older per-row card style below is historical.
 
 ## Purpose
 
@@ -82,7 +82,7 @@ Expected active state:
 
 ### 2. Extension Popup / Popover
 
-The browser-action popup is the settings control surface. It is a compact dark panel, 372px wide, organized into General, Distractions, and Appearance tabs. Tabs support arrow keys, Home, and End. Settings persist immediately. Content placement and triggers are independent; dormant card preferences survive switching back to page placement. A compact sample layout previews these choices without writing settings.
+The browser-action popup is the settings control surface. It is a compact dark panel, 372px wide. Layout stays open. Quiet groups are rendered from `distractionFilters`, and each group collapses to a count. Playback and Look collapse to the current choice. Summaries support arrow keys, Home, and End. Settings persist immediately. Content placement and triggers are independent; dormant card preferences survive switching back to page placement. A compact sample layout previews these choices without writing settings.
 
 The popup is not a marketing page and should not contain onboarding copy. It should feel like a quiet utility control panel.
 
@@ -288,6 +288,8 @@ Range:
 Controls how long the pointer must rest in a side hover zone before the panel opens. The popup displays the current value as an inline `ms` output.
 
 ## Popup Design Specification
+
+Historical. The October 2026 contract and `popup/popup.css` describe the current popup.
 
 ### Overall Layout
 
