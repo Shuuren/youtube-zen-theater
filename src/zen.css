@@ -1072,3 +1072,108 @@ html:not(:fullscreen):not(:has(:fullscreen)).ytzt-native-theater ytd-engagement-
 html:not(:fullscreen):not(:has(:fullscreen)).ytzt-native-theater .ytzt-meta-drawer-button {
   display: none !important;
 }
+
+/*
+ * Site-wide distraction filters. These are class toggles only: no document observer.
+ * :has() is limited to shelves, guide rows, and items YouTube does not already mark.
+ */
+
+html.ytzt-hide-home-feed ytd-browse[page-subtype='home'] :is(ytd-rich-grid-renderer, ytd-rich-grid-row, #contents.ytd-rich-grid-renderer),
+html.ytzt-hide-home-feed #home-page-skeleton,
+html.ytzt-hide-home-feed ytd-browse[role='main']:not([page-subtype]):has(ytd-feed-filter-chip-bar-renderer) ytd-rich-grid-renderer {
+  display: none !important;
+}
+
+html.ytzt-hide-endscreen :is(.html5-endscreen, .ytp-fullscreen-grid, .ytp-endscreen-content) {
+  display: none !important;
+}
+
+html.ytzt-hide-info-cards :is(.ytp-ce-element, .ytp-ce-hide-button-container, .ytp-ce-covering-overlay) {
+  display: none !important;
+}
+
+html.ytzt-disable-autoplay :is(.autonav-endscreen, .ytp-autonav-endscreen-countdown-container) {
+  display: none !important;
+}
+
+html.ytzt-hide-comments :is(#comments, #comment-teaser, ytd-comments#comments) {
+  display: none !important;
+}
+
+html.ytzt-hide-offers :is(
+  ytd-merch-shelf-renderer,
+  #ticket-shelf,
+  #offer-module,
+  #donation-shelf,
+  #clarify-box,
+  ytd-mealbar-promo-renderer,
+  .mealbar-promo-renderer,
+  ytd-primetime-promo-renderer,
+  #surveys,
+  ytd-single-option-survey-renderer,
+  yt-alert-with-actions-renderer
+) {
+  display: none !important;
+}
+
+html.ytzt-hide-notifications :is(
+  ytd-notification-topbar-button-renderer,
+  ytd-notification-topbar-button-shape-renderer
+) {
+  display: none !important;
+}
+
+html.ytzt-hide-search-shelves :is(ytd-search, ytd-two-column-search-results-renderer) :is(
+  ytd-shelf-renderer,
+  ytd-horizontal-card-list-renderer
+) {
+  display: none !important;
+}
+
+html.ytzt-hide-mixes :is(ytd-radio-renderer, ytd-compact-radio-renderer),
+html.ytzt-hide-mixes .ytp-videowall-still[data-is-mix='true'],
+html.ytzt-hide-mixes :is(ytd-rich-item-renderer, ytd-compact-video-renderer, ytd-video-renderer):has(a[href*='start_radio=1']),
+html.ytzt-hide-mixes ytd-rich-item-renderer:has(ytd-video-meta-block[radio-meta]) {
+  display: none !important;
+}
+
+html.ytzt-hide-trending :is(ytd-guide-entry-renderer, ytd-mini-guide-entry-renderer):has(a[href^='/feed/trending'], a[href^='/feed/explore']),
+html.ytzt-hide-trending ytd-browse[page-subtype='trending'],
+html.ytzt-hide-trending ytd-browse[page-subtype='explore'] {
+  display: none !important;
+}
+
+html.ytzt-hide-more-youtube ytd-guide-section-renderer:has(a[href='/premium'], a[href^='/feed/storefront'], a[href*='music.youtube.com']) {
+  display: none !important;
+}
+
+html.ytzt-hide-shorts :is(
+  ytd-reel-shelf-renderer,
+  ytd-rich-shelf-renderer[is-shorts],
+  ytd-rich-section-renderer[is-shorts],
+  ytd-rich-grid-renderer[is-shorts]
+),
+html.ytzt-hide-shorts :is(ytd-guide-entry-renderer, ytd-mini-guide-entry-renderer):has(a[href='/shorts'], a[href^='/shorts/']),
+html.ytzt-hide-shorts :is(yt-chip-cloud-chip-renderer, yt-tab-shape):has(a[href*='/shorts']),
+html.ytzt-hide-shorts :is(ytd-rich-item-renderer, ytd-video-renderer, ytd-compact-video-renderer, ytd-grid-video-renderer):has(a[href*='/shorts/']),
+html.ytzt-hide-shorts ytd-search grid-shelf-view-model:has(a[href*='/shorts/']),
+html.ytzt-hide-shorts :is(ytm-shorts-lockup-view-model, ytm-shorts-lockup-view-model-v2) {
+  display: none !important;
+}
+
+html.ytzt-hide-shorts:not(.ytzt-shorts-page) :is(ytd-shorts, #shorts-container, #player-shorts-container) {
+  display: none !important;
+}
+
+html.ytzt-filter-recommendations #items.ytd-watch-next-secondary-results-renderer,
+html.ytzt-filter-recommendations .ytp-pause-overlay {
+  display: none !important;
+}
+
+html.ytzt-filter-live-chat ytd-live-chat-frame#chat {
+  display: none !important;
+}
+
+html.ytzt-filter-playlist ytd-playlist-panel-renderer {
+  display: none !important;
+}

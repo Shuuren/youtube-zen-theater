@@ -4,6 +4,8 @@ const path = require('node:path');
 
 const vm = require('node:vm');
 
+const settingsSource = fs.readFileSync(path.join(__dirname, '..', 'src', 'settings.js'), 'utf8');
+
 const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'content.js'), 'utf8');
 
 class FakeClassList {
@@ -664,6 +666,7 @@ async function createHarness(initialSettings = {}, shouldRejectGet = false) {
   };
 
   sandbox.window = sandbox;
+  vm.runInNewContext(settingsSource, sandbox, { filename: 'src/settings.js' });
   vm.runInNewContext(source, sandbox, { filename: 'src/content.js' });
 
   const harness = {
@@ -1574,6 +1577,60 @@ async function testIdleLagRegression() {
   assert(harness.animationFrameRequests === settledAnimationFrameRequests, 'unrelated page churn triggered Zen work');
 }
 
+async function testDistractionFilters() {
+  const harness = await createHarness();
+  await harness.settle(50);
+  assert(hasClass(harness, 'ytzt-hide-home-feed'), 'home feed hiding is not on by default');
+  assert(hasClass(harness, 'ytzt-hide-endscreen'), 'end screen hiding is not on by default');
+  assert(hasClass(harness, 'ytzt-hide-info-cards'), 'info card hiding is not on by default');
+  assert(hasClass(harness, 'ytzt-disable-autoplay'), 'autoplay control is not armed by default');
+  assert(hasClass(harness, 'ytzt-hide-offers'), 'offers are not hidden by default');
+  assert(hasClass(harness, 'ytzt-filter-recommendations'), 'recommendation filter is not applied with the existing setting');
+  assert(!hasClass(harness, 'ytzt-hide-shorts'), 'shorts hiding is on without being chosen');
+  assert(!hasClass(harness, 'ytzt-hide-comments'), 'comments are hidden by default');
+  assert(!hasClass(harness, 'ytzt-filter-live-chat'), 'live chat CSS hide ran during Zen and duplicated the native close');
+
+  harness.storage.emit({
+    hideHomeFeed: { newValue: false },
+    hideShorts: { newValue: true },
+    hideComments: { newValue: true },
+    disableAutoplay: { newValue: false }
+  });
+  await harness.settle(50);
+  assert(!hasClass(harness, 'ytzt-hide-home-feed'), 'home feed toggle did not restore the feed');
+  assert(hasClass(harness, 'ytzt-hide-shorts'), 'shorts toggle did not apply');
+  assert(hasClass(harness, 'ytzt-hide-comments'), 'comments toggle did not apply');
+  assert(!hasClass(harness, 'ytzt-disable-autoplay'), 'autoplay toggle did not turn off');
+
+  const player = harness.document.createElement('div');
+  player.id = 'movie_player';
+  const toggle = harness.document.createElement('button');
+  toggle.className = 'ytp-autonav-toggle-button';
+  toggle.setAttribute('aria-checked', 'true');
+  let clicks = 0;
+  toggle.addEventListener('click', () => {
+    clicks += 1;
+  });
+  player.append(toggle);
+  harness.document.body.append(player);
+  const title = harness.document.createElement('title');
+  title.textContent = '(4) a video';
+  harness.document.documentElement.append(title);
+  harness.storage.emit({ disableAutoplay: { newValue: true } });
+  await harness.settle(900);
+  assert(clicks === 1, `autoplay toggle clicked ${clicks} times`);
+  assert(title.textContent === 'a video', 'unread count stayed in the tab title');
+  await harness.settle(900);
+  assert(clicks === 1, 'autoplay toggle was clicked again on a later apply');
+
+  harness.location.pathname = '/shorts/clip';
+  harness.location.href = 'https://www.youtube.com/shorts/clip';
+  harness.dispatch('yt-navigate-finish');
+  await harness.settle(1000);
+  assert(hasClass(harness, 'ytzt-shorts-page'), 'shorts watch page was not recognized');
+  assert(!hasClass(harness, 'ytzt-watch-page'), 'a Shorts URL entered Zen theater');
+}
+
 async function main() {
   await testStartupAndShortcut();
   await testStartupAndShortcutChoices();
@@ -1589,6 +1646,7 @@ async function main() {
   await testNativeTheaterOwnership();
   await testNativeFullscreenOwnership();
   await testIdleLagRegression();
+  await testDistractionFilters();
   console.log(
     'lag regression: PASS (storage fallback; shortcut phases; Auto Zen navigation; hover cancellation; page/card scrolling; hover/button ownership; bounded live chat; idle writes; unrelated churn)'
   );

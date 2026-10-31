@@ -4,6 +4,8 @@ const path = require('node:path');
 
 const vm = require('node:vm');
 
+const settingsSource = fs.readFileSync(path.join(__dirname, '..', 'src', 'settings.js'), 'utf8');
+
 const source = fs.readFileSync(path.join(__dirname, '..', 'popup', 'popup.js'), 'utf8');
 
 const settingIds = [
@@ -137,6 +139,7 @@ async function createHarness(options = {}) {
     Boolean
   };
 
+  vm.runInNewContext(settingsSource, sandbox, { filename: 'src/settings.js' });
   vm.runInNewContext(source, sandbox, { filename: 'popup/popup.js' });
   await flush();
 

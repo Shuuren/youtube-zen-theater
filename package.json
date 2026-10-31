@@ -4,7 +4,7 @@
   "scripts": {
     "lint": "oxlint .",
     "typecheck": "tsc --noEmit",
-    "test": "node scripts/lag-regression.js && node scripts/popup-regression.js && node scripts/diagnostic-regression.js && node scripts/native-panels-regression.js",
+    "test": "node scripts/settings-regression.js && node scripts/lag-regression.js && node scripts/popup-regression.js && node scripts/diagnostic-regression.js && node scripts/native-panels-regression.js",
     "check": "bun run lint && bun run typecheck && bun run test"
   },
   "devDependencies": {

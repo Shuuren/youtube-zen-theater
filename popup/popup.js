@@ -1,58 +1,13 @@
-/**
- * @typedef {Object} PopupSettings
- * @property {'page'|'card'|null} detailsLocation
- * @property {'left'|'right'|null} detailsSide
- * @property {'scroll'|'button'|'hover'|'scroll-hover'|null} detailsTrigger
- * @property {'page'|'card'|'hidden'|null} playlistLocation
- * @property {'left'|'right'|null} playlistSide
- * @property {'button'|'hover'|null} playlistTrigger
- * @property {'page'|'card'} scrollBehavior
- * @property {'zen'|'theater'} startupMode
- * @property {'t'|'shift-t'} zenShortcut
- * @property {boolean} autoZen
- * @property {boolean} hideLiveChat
- * @property {boolean} hideHeader
- * @property {boolean} hideRecommendations
- * @property {boolean} revealHeaderOnHover
- * @property {boolean} revealMetaOnHover
- * @property {boolean} revealPlaylistOnHover
- * @property {'drawer'|'hover'} sideRevealMode
- * @property {'custom'|'native'} drawerImplementation
- * @property {'same'|'separate'} revealSideLayout
- * @property {'left'|'right'} sideHoverPosition
- * @property {'playlist-top'|'details-top'} sameSideSplit
- * @property {number} hoverRevealDelay
- * @property {boolean} drawerGlassEffect
- * @property {boolean} shortcutEnabled
- */
+/** @typedef {YtztSettings} PopupSettings */
+
+if (!globalThis.YTZTSettings) {
+  throw new Error('[YouTube Zen] src/settings.js must load before popup.js.');
+}
 
 /** @type {PopupSettings} */
-const DEFAULT_SETTINGS = {
-  detailsLocation: null,
-  detailsSide: null,
-  detailsTrigger: null,
-  playlistLocation: null,
-  playlistSide: null,
-  playlistTrigger: null,
-  scrollBehavior: 'page',
-  startupMode: 'zen',
-  zenShortcut: 't',
-  autoZen: true,
-  hideLiveChat: true,
-  hideHeader: true,
-  hideRecommendations: true,
-  revealHeaderOnHover: true,
-  revealMetaOnHover: true,
-  revealPlaylistOnHover: true,
-  sideRevealMode: 'drawer',
-  drawerImplementation: 'custom',
-  revealSideLayout: 'separate',
-  sideHoverPosition: 'right',
-  sameSideSplit: 'playlist-top',
-  hoverRevealDelay: 140,
-  drawerGlassEffect: true,
-  shortcutEnabled: true
-};
+const DEFAULT_SETTINGS = globalThis.YTZTSettings.defaultSettings;
+
+renderDistractionFilters();
 
 /** @typedef {HTMLInputElement|HTMLSelectElement} SettingControl */
 
@@ -111,42 +66,35 @@ function setControlsEnabled(enabled) {
  * @returns {PopupSettings}
  */
 function normalizeSettings(values) {
-  const next = { ...DEFAULT_SETTINGS, ...values };
-  next.detailsLocation = ['page', 'card'].includes(next.detailsLocation) ? next.detailsLocation : null;
-  next.detailsSide = ['left', 'right'].includes(next.detailsSide) ? next.detailsSide : null;
-  next.detailsTrigger = ['scroll', 'button', 'hover', 'scroll-hover'].includes(next.detailsTrigger) ? next.detailsTrigger : null;
-  next.playlistLocation = ['page', 'card', 'hidden'].includes(next.playlistLocation) ? next.playlistLocation : null;
-  next.playlistSide = ['left', 'right'].includes(next.playlistSide) ? next.playlistSide : null;
-  next.playlistTrigger = ['button', 'hover'].includes(next.playlistTrigger) ? next.playlistTrigger : null;
-  next.scrollBehavior = next.scrollBehavior === 'card' ? 'card' : 'page';
-  next.startupMode = next.startupMode === 'theater' ? 'theater' : 'zen';
-  next.zenShortcut = next.zenShortcut === 'shift-t' ? 'shift-t' : 't';
-  next.autoZen = next.autoZen === true;
-  next.hideLiveChat = next.hideLiveChat === true;
-  next.hideHeader = next.hideHeader === true;
-  next.hideRecommendations = next.hideRecommendations === true;
-  next.revealHeaderOnHover = next.revealHeaderOnHover === true;
-  next.revealMetaOnHover = next.revealMetaOnHover === true;
-  next.revealPlaylistOnHover = next.revealPlaylistOnHover === true;
-  next.sideRevealMode = next.sideRevealMode === 'hover' ? 'hover' : 'drawer';
-  next.drawerImplementation = next.drawerImplementation === 'native' ? 'native' : 'custom';
-  next.revealSideLayout = next.revealSideLayout === 'same' ? 'same' : 'separate';
-  next.sideHoverPosition = next.sideHoverPosition === 'left' ? 'left' : 'right';
-  next.sameSideSplit = next.sameSideSplit === 'details-top' ? 'details-top' : 'playlist-top';
-  next.hoverRevealDelay = Number.isFinite(Number(next.hoverRevealDelay))
-    ? Math.min(1000, Math.max(0, Number(next.hoverRevealDelay)))
-    : DEFAULT_SETTINGS.hoverRevealDelay;
-  next.drawerGlassEffect = next.drawerGlassEffect === true;
-  next.shortcutEnabled = next.shortcutEnabled === true;
+  return globalThis.YTZTSettings.normalizePopupSettings(values);
+}
 
-  next.detailsLocation ||= next.scrollBehavior === 'card' && next.revealMetaOnHover ? 'card' : 'page';
-  next.detailsSide ||= next.sideHoverPosition;
-  next.detailsTrigger ||= next.sideRevealMode === 'hover' ? 'scroll-hover' : 'scroll';
-  next.playlistLocation ||= !next.revealPlaylistOnHover ? 'hidden' : next.drawerImplementation === 'native' ? 'page' : 'card';
-  next.playlistSide ||= next.revealSideLayout === 'same' ? next.sideHoverPosition : next.sideHoverPosition === 'left' ? 'right' : 'left';
-  next.playlistTrigger ||= next.sideRevealMode === 'hover' ? 'hover' : 'button';
+function renderDistractionFilters() {
+  const host = document.getElementById('site-filters');
 
-  return next;
+  if (!host) {
+    return;
+  }
+
+  for (const filter of globalThis.YTZTSettings.distractionFilters) {
+    if (document.getElementById(filter.key)) {
+      continue;
+    }
+
+    const label = document.createElement('label');
+    label.className = 'row compact-row';
+    const text = document.createElement('span');
+    const title = document.createElement('strong');
+    title.textContent = filter.label;
+    const detail = document.createElement('small');
+    detail.textContent = filter.detail;
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.id = filter.key;
+    text.append(title, detail);
+    label.append(text, input);
+    host.append(label);
+  }
 }
 
 /** @param {PopupSettings} settings */

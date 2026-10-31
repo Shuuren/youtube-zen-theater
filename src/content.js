@@ -1,58 +1,11 @@
-/**
- * @typedef {Object} Settings
- * @property {'page'|'card'|null} detailsLocation
- * @property {'left'|'right'|null} detailsSide
- * @property {'scroll'|'button'|'hover'|'scroll-hover'|null} detailsTrigger
- * @property {'page'|'card'|'hidden'|null} playlistLocation
- * @property {'left'|'right'|null} playlistSide
- * @property {'button'|'hover'|null} playlistTrigger
- * @property {'page'|'card'} scrollBehavior
- * @property {'zen'|'theater'} startupMode
- * @property {'t'|'shift-t'} zenShortcut
- * @property {boolean} autoZen
- * @property {boolean} hideLiveChat
- * @property {boolean} hideHeader
- * @property {boolean} hideRecommendations
- * @property {boolean} revealHeaderOnHover
- * @property {boolean} revealMetaOnHover
- * @property {boolean} revealPlaylistOnHover
- * @property {'drawer'|'hover'} sideRevealMode
- * @property {'custom'|'native'} drawerImplementation
- * @property {'same'|'separate'} revealSideLayout
- * @property {'left'|'right'} sideHoverPosition
- * @property {'playlist-top'|'details-top'} sameSideSplit
- * @property {number} hoverRevealDelay
- * @property {boolean} drawerGlassEffect
- * @property {boolean} shortcutEnabled
- */
+/** @typedef {YtztSettings} Settings */
+
+if (!globalThis.YTZTSettings) {
+  throw new Error('[YouTube Zen] src/settings.js must load before src/content.js.');
+}
 
 /** @type {Settings} */
-const DEFAULT_SETTINGS = {
-  detailsLocation: null,
-  detailsSide: null,
-  detailsTrigger: null,
-  playlistLocation: null,
-  playlistSide: null,
-  playlistTrigger: null,
-  scrollBehavior: 'page',
-  startupMode: 'zen',
-  zenShortcut: 't',
-  autoZen: true,
-  hideLiveChat: true,
-  hideHeader: true,
-  hideRecommendations: true,
-  revealHeaderOnHover: true,
-  revealMetaOnHover: true,
-  revealPlaylistOnHover: true,
-  sideRevealMode: 'drawer',
-  drawerImplementation: 'custom',
-  revealSideLayout: 'separate',
-  sideHoverPosition: 'right',
-  sameSideSplit: 'playlist-top',
-  hoverRevealDelay: 140,
-  drawerGlassEffect: true,
-  shortcutEnabled: true
-};
+const DEFAULT_SETTINGS = globalThis.YTZTSettings.defaultSettings;
 
 const CHAT_CLOSE_SELECTORS = [
   '#show-hide-button button',
@@ -197,6 +150,21 @@ let playerMinimizeTouched = false;
 
 let liveChatHideClickPending = false;
 
+const MAX_AUTOPLAY_ATTEMPTS = 3;
+
+let autoplayAttempts = 0;
+
+let autoplayResolved = false;
+
+/** @type {Element|null} */
+let autoplayPlayer = null;
+
+/** @type {MutationObserver|null} */
+let titleObserver = null;
+
+/** @type {HTMLElement|null} */
+let observedTitle = null;
+
 /** @type {WeakSet<Event>} */
 const handledShortcutEvents = new WeakSet();
 
@@ -219,6 +187,7 @@ function bootWhenDocumentReady() {
 }
 
 async function init() {
+  applyWatchFilters();
   await loadSettings();
   applyStartupPreference();
   bindEvents();
@@ -247,33 +216,7 @@ async function loadSettings() {
  * @returns {Settings}
  */
 function normalizeSettings(values) {
-  const next = { ...DEFAULT_SETTINGS, ...values };
-  next.detailsLocation = ['page', 'card'].includes(next.detailsLocation) ? next.detailsLocation : null;
-  next.detailsSide = ['left', 'right'].includes(next.detailsSide) ? next.detailsSide : null;
-  next.detailsTrigger = ['scroll', 'button', 'hover', 'scroll-hover'].includes(next.detailsTrigger) ? next.detailsTrigger : null;
-  next.playlistLocation = ['page', 'card', 'hidden'].includes(next.playlistLocation) ? next.playlistLocation : null;
-  next.playlistSide = ['left', 'right'].includes(next.playlistSide) ? next.playlistSide : null;
-  next.playlistTrigger = ['button', 'hover'].includes(next.playlistTrigger) ? next.playlistTrigger : null;
-  next.scrollBehavior = next.scrollBehavior === 'card' ? 'card' : 'page';
-  next.startupMode = next.startupMode === 'theater' ? 'theater' : 'zen';
-  next.zenShortcut = next.zenShortcut === 'shift-t' ? 'shift-t' : 't';
-  next.autoZen = next.autoZen === true;
-  next.hideLiveChat = next.hideLiveChat === true;
-  next.hideHeader = next.hideHeader === true;
-  next.hideRecommendations = next.hideRecommendations === true;
-  next.revealHeaderOnHover = next.revealHeaderOnHover === true;
-  next.revealMetaOnHover = next.revealMetaOnHover === true;
-  next.revealPlaylistOnHover = next.revealPlaylistOnHover === true;
-  next.sideRevealMode = next.sideRevealMode === 'hover' ? 'hover' : 'drawer';
-  next.drawerImplementation = next.drawerImplementation === 'native' ? 'native' : 'custom';
-  next.revealSideLayout = next.revealSideLayout === 'same' ? 'same' : 'separate';
-  next.sideHoverPosition = next.sideHoverPosition === 'left' ? 'left' : 'right';
-  next.sameSideSplit = next.sameSideSplit === 'details-top' ? 'details-top' : 'playlist-top';
-  next.hoverRevealDelay = normalizeHoverDelay(next.hoverRevealDelay);
-  next.drawerGlassEffect = next.drawerGlassEffect === true;
-  next.shortcutEnabled = next.shortcutEnabled === true;
-
-  return next;
+  return globalThis.YTZTSettings.normalizeSettings(values);
 }
 
 function usesDetailsCard() {
@@ -381,6 +324,14 @@ function bindEvents() {
       liveChatCloseResolved = false;
       liveChatOpenObserved = false;
       detachLiveChatObserver();
+    }
+
+    if (changes.disableAutoplay) {
+      resetAutoplayAttempt();
+    }
+
+    if (changes.hideNotifications && !settings.hideNotifications) {
+      detachTitleObserver();
     }
 
     if (
@@ -515,7 +466,121 @@ function scheduleApply(delay = 120) {
   applyTimers.set(timerKey, timer);
 }
 
+function isShortsPage() {
+  return location.pathname === '/shorts' || location.pathname.startsWith('/shorts/');
+}
+
+function resetAutoplayAttempt() {
+  autoplayAttempts = 0;
+  autoplayResolved = false;
+  autoplayPlayer = null;
+}
+
+function detachTitleObserver() {
+  titleObserver?.disconnect();
+  titleObserver = null;
+  observedTitle = null;
+}
+
+/**
+ * @param {HTMLElement} title
+ */
+function stripUnreadCount(title) {
+  const text = title.textContent || '';
+  const next = text.replace(/^\(\d+\)\s+/, '');
+
+  if (next !== text) {
+    title.textContent = next;
+  }
+}
+
+function syncNotificationTitle() {
+  if (!settings.hideNotifications) {
+    detachTitleObserver();
+
+    return;
+  }
+
+  const title = document.querySelector('title');
+
+  if (!(title instanceof HTMLElement)) {
+    return;
+  }
+
+  stripUnreadCount(title);
+
+  if (title === observedTitle && titleObserver) {
+    return;
+  }
+
+  detachTitleObserver();
+  observedTitle = title;
+  titleObserver = new MutationObserver(() => {
+    if (!settings.hideNotifications) {
+      return;
+    }
+
+    stripUnreadCount(title);
+  });
+  titleObserver.observe(title, { childList: true, characterData: true, subtree: true });
+}
+
+function syncAutoplay() {
+  if (!settings.disableAutoplay || autoplayResolved || !isWatchPage()) {
+    return;
+  }
+
+  const player = document.querySelector('#movie_player');
+
+  if (!(player instanceof HTMLElement)) {
+    return;
+  }
+
+  if (player !== autoplayPlayer) {
+    autoplayPlayer = player;
+    autoplayAttempts = 0;
+  }
+
+  if (autoplayAttempts >= MAX_AUTOPLAY_ATTEMPTS) {
+    return;
+  }
+
+  const toggle = player.querySelector('.ytp-autonav-toggle-button');
+
+  if (!(toggle instanceof HTMLElement)) {
+    autoplayAttempts += 1;
+
+    return;
+  }
+
+  const enabled = toggle.getAttribute('aria-checked') === 'true' || toggle.getAttribute('aria-pressed') === 'true';
+
+  if (enabled) {
+    toggle.click();
+  }
+
+  autoplayResolved = true;
+}
+
+function applyWatchFilters() {
+  const root = document.documentElement;
+  const zenActive = zenEnabled && isWatchPage();
+  root.classList.toggle('ytzt-shorts-page', isShortsPage());
+
+  for (const filter of globalThis.YTZTSettings.distractionFilters) {
+    root.classList.toggle(filter.rootClass, settings[filter.key] === true);
+  }
+
+  root.classList.toggle('ytzt-filter-recommendations', settings.hideRecommendations === true);
+  root.classList.toggle('ytzt-filter-live-chat', settings.hideLiveChat === true && !zenActive);
+  root.classList.toggle('ytzt-filter-playlist', getPlaylistLocation() === 'hidden');
+  syncAutoplay();
+  syncNotificationTitle();
+}
+
 function applyZen() {
+  applyWatchFilters();
+
   if (document.fullscreenElement) {
     return;
   }
@@ -1144,6 +1209,7 @@ function resetWatchSurfaceState() {
   clearHoverRevealTimer();
   playlistOpenRequested = false;
   lastPanelTrigger = null;
+  resetAutoplayAttempt();
   liveChatOpenObserved = false;
   chatClickCount = 0;
   chatLookupAttemptCount = 0;

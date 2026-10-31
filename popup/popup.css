@@ -81,6 +81,11 @@ p {
   border: 0;
 }
 
+#site-filters {
+  max-height: 280px;
+  overflow: auto;
+}
+
 .advanced {
   overflow: visible;
   border: 1px solid #252525;
