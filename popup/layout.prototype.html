@@ -1,0 +1,419 @@
+<!doctype html>
+<!-- Disposable layout study: all16 settings, original popup styling, ?variant=A|B|C.
+     Open directly. State is in memory; no extension APIs or production changes. -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>YouTube Zen layout study</title><style>@view-transition {
+  navigation: auto;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  width: 372px;
+  margin: 0;
+  background: #0a0a0a;
+  color: #f7f7f7;
+  font: 13px/1.4 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.panel {
+  padding: 14px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 2px 14px;
+}
+
+.mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #2d2d2d;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #181818, #080808);
+}
+
+.mark svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: #f7f7f7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.mark path:nth-of-type(1) {
+  fill: #ff304f;
+  stroke: #ff304f;
+}
+
+h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+p {
+  margin: 2px 0 0;
+  color: #a3a3a3;
+  font-size: 12px;
+}
+
+.settings {
+  display: grid;
+  gap: 14px;
+}
+
+.group {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.advanced {
+  overflow: visible;
+  border: 1px solid #252525;
+  border-radius: 8px;
+  background: #101010;
+}
+
+.advanced summary {
+  min-height: 42px;
+  padding: 11px;
+  color: #e8e8e8;
+  font-weight: 650;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.advanced-grid {
+  display: grid;
+  gap: 7px;
+  padding: 0 7px 7px;
+}
+
+legend {
+  margin: 0 0 1px;
+  padding: 0 2px;
+  color: #d6d6d6;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 50px;
+  padding: 9px 11px;
+  border: 1px solid #252525;
+  border-radius: 8px;
+  background: #111;
+}
+
+.compact-row {
+  min-height: 44px;
+  padding: 8px 10px;
+  background: #151515;
+}
+
+.compact-row[hidden] {
+  display: none;
+}
+
+strong,
+small {
+  display: block;
+}
+
+strong {
+  font-size: 13px;
+  font-weight: 650;
+}
+
+small {
+  margin-top: 2px;
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+input[type="checkbox"] {
+  position: relative;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 22px;
+  appearance: none;
+  border: 1px solid #343434;
+  border-radius: 999px;
+  background: #1c1c1c;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease;
+}
+
+input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fafafa;
+  transition: transform 140ms ease;
+}
+
+input[type="checkbox"]:checked {
+  border-color: #ff304f;
+  background: #ff304f;
+}
+
+input[type="checkbox"]:checked::after {
+  transform: translateX(16px);
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: 2px solid #f7f7f7;
+  outline-offset: 2px;
+}
+
+select {
+  min-width: 88px;
+  height: 32px;
+  padding: 0 28px 0 10px;
+  border: 1px solid #343434;
+  border-radius: 8px;
+  background: #1c1c1c;
+  color: #f7f7f7;
+  font: inherit;
+  cursor: pointer;
+}
+
+input[type="range"] {
+  width: 132px;
+  accent-color: #ff304f;
+  cursor: pointer;
+}
+
+select:focus-visible {
+  outline: 2px solid #f7f7f7;
+  outline-offset: 2px;
+}
+
+.range-row {
+  align-items: start;
+}
+
+
+/* Category navigation reuses the popup's original colors and controls. */
+.tabs {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #252525;
+}
+
+.tabs button {
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: #a3a3a3;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tabs button[aria-selected="true"] {
+  border-bottom-color: #ff304f;
+  color: #f7f7f7;
+}
+
+.tabs button:hover {
+  color: #f7f7f7;
+}
+
+.tabs button:active {
+  transform: translateY(1px);
+}
+
+.tabs button:focus-visible,
+input[type="range"]:focus-visible {
+  outline: 2px solid #f7f7f7;
+  outline-offset: 2px;
+}
+
+.settings {
+  align-content: start;
+  gap: 7px;
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.row span {
+  min-width: 0;
+}
+
+select {
+  max-width: 155px;
+}
+
+.explanation,
+.hint {
+  margin: 0 2px;
+  color: #a3a3a3;
+  font-size: 11px;
+}
+
+.status {
+  min-height: 18px;
+  margin: 14px 2px 0;
+  color: #a3a3a3;
+  font-size: 11px;
+}
+
+.status[data-state="error"] {
+  color: #ffb3bd;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  input[type="checkbox"],
+  input[type="checkbox"]::after {
+    transition: none;
+  }
+}
+
+body{width:auto;background:transparent;margin:0}.study{min-height:800px;box-sizing:border-box;display:grid;align-content:start;gap:18px;padding:4px 0 90px;min-width:0}.study>*{min-width:0}.intro{color:var(--foreground,#f7f7f7);display:grid;gap:5px}.intro h1{font-size:18px}.intro p{font-size:12px;color:var(--muted-foreground,#a3a3a3);max-width:65ch}.workbench{display:flex;justify-content:center;min-width:0}.mock-popup{width:min(372px,100%);background:#0a0a0a;border-radius:12px;overflow:hidden}.settings{gap:16px;max-height:400px;scrollbar-gutter:stable}.group{gap:7px}.group legend{margin-bottom:7px}.row{box-sizing:border-box}.row select{flex-shrink:0;max-width:148px;font-size:12px}.row input[type=range]{width:112px}.row span{min-width:0}.panel-note{margin:0 2px;color:#a3a3a3;font-size:11px}.fold{border:1px solid #252525;border-radius:8px;background:#101010}.fold summary{box-sizing:border-box;min-height:52px;padding:9px 11px;cursor:pointer;font-size:12px;font-weight:650;display:flex;align-items:center;gap:8px;list-style:none}.fold summary:before{content:'›';color:#a3a3a3;font-size:17px}.fold[open] summary:before{content:'⌄'}.fold summary span{display:grid;gap:2px;flex:1}.fold summary small{font-weight:400}.fold-content{display:grid;gap:7px;padding:0 7px 7px}.fold-content .row{min-height:44px;padding:8px}.fold summary:focus-visible,.jump:focus-visible,.back:focus-visible{outline:2px solid #f7f7f7;outline-offset:2px}.jump{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;text-align:left;padding:11px;border:1px solid #252525;border-radius:8px;color:#f7f7f7;background:#111;font:inherit;cursor:pointer;width:100%}.jump span{display:grid;gap:3px}.jump strong{font-size:13px}.jump .chevron{font-size:20px;color:#a3a3a3}.jump:hover{border-color:#343434}.jump:active,.back:active{transform:translateY(1px)}.back{padding:0;min-height:32px;background:transparent;border:0;color:#a3a3a3;font:inherit;font-size:12px;text-align:left;cursor:pointer}.page-title{margin:0;font-size:14px;font-weight:650}.summary-note{font-size:11px;color:#a3a3a3;margin:0 2px}.state{color:var(--muted-foreground,#a3a3a3);font-size:11px;max-width:550px;width:100%;justify-self:center}.state summary{min-height:30px;cursor:pointer}.state pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--code-background,#111);color:var(--code-foreground,#f7f7f7);padding:12px;border-radius:8px}.switcher{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:3px;align-items:center;white-space:nowrap;padding:5px;border:1px solid #343434;border-radius:12px;background:#1c1c1c;box-shadow:0 4px 20px #0004;z-index:3}.switcher button{min-height:40px;min-width:34px;padding:7px 10px;border:0;background:transparent;color:#a3a3a3;border-radius:7px;font:inherit;font-size:12px;cursor:pointer}.switcher button[aria-pressed=true]{background:#f7f7f7;color:#111}.switcher button:focus-visible{outline:2px solid #ff304f;outline-offset:2px}.switcher .arrow{font-size:18px;padding:7px}.switcher button:active{transform:translateY(1px)}@media(max-width:400px){.row select{max-width:140px}.switcher button{padding:7px}.study{gap:14px}.mock-popup .panel{padding:14px}}
+</style></head><body>
+<main class="study"><header class="intro"><h1 id="variant-title"></h1><p id="variant-description"></p><p>Original styling. All 16 settings retained. Changes are temporary.</p></header><div class="workbench"><article class="mock-popup"><div class="panel"><header class="header">
+        <div class="mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" role="img">
+            <rect x="3" y="5" width="26" height="18" rx="3"></rect>
+            <path d="M14 11l8 4-8 5z"></path>
+            <path d="M7 27h18"></path>
+          </svg>
+        </div>
+        <div>
+          <h1>YouTube Zen</h1>
+          <p>Fullscreen theater controls</p>
+        </div>
+      </header><nav class="tabs" role="tablist" aria-label="Settings categories" id="category-tabs"></nav><section class="settings" role="tabpanel" id="content"></section><p class="status">Preview only. Changes are not saved.</p></div></article></div><details class="state"><summary>See all 16 settings and their current values</summary><pre id="state"></pre></details></main>
+<nav class="switcher" aria-label="Compare layout prototypes"><button class="arrow" data-cycle="-1" aria-label="Previous prototype">‹</button><button data-variant="A">A · Groups</button><button data-variant="B">B · Expand</button><button data-variant="C">C · Focus</button><button class="arrow" data-cycle="1" aria-label="Next prototype">›</button></nav>
+<script>
+const values={autoZen:true,shortcutEnabled:true,scrollBehavior:'page',revealMetaOnHover:true,revealPlaylistOnHover:true,hideHeader:true,revealHeaderOnHover:true,hideRecommendations:true,hideLiveChat:true,sideRevealMode:'drawer',hoverRevealDelay:140,revealSideLayout:'separate',sideHoverPosition:'right',sameSideSplit:'playlist-top',drawerImplementation:'custom',drawerGlassEffect:true};
+const fields={
+ autoZen:{title:'Auto Zen',help:'Apply automatically on videos'},
+ shortcutEnabled:{title:'T shortcut'},
+ scrollBehavior:{title:'When you scroll down',options:[['page','Scroll page'],['card','Open side card']]},
+ revealMetaOnHover:{title:'Side details',help:'Enable the details panel in side-card mode'},
+ revealPlaylistOnHover:{title:'Playlist',help:'Keep the native playlist queue available'},
+ hideHeader:{title:'Hide top bar',help:'Search, profile, and navigation'},
+ revealHeaderOnHover:{title:'Top hover',help:'Reveal the hidden top bar at its edge'},
+ hideRecommendations:{title:'Hide recommendations',help:'Keep the details at their normal width'},
+ hideLiveChat:{title:'Hide live chat',help:'Use YouTube’s native close control'},
+ sideRevealMode:{title:'Open style',options:[['drawer','Drawer'],['hover','Hover']]},
+ hoverRevealDelay:{title:'Hover delay',help:'Used with Hover',range:true},
+ revealSideLayout:{title:'Panel sides',options:[['separate','Separate'],['same','Same side']]},
+ sideHoverPosition:{title:'Details side',options:[['right','Right'],['left','Left']]},
+ sameSideSplit:{title:'Same-side split',help:'Top hover half when sharing an edge',options:[['playlist-top','Playlist top'],['details-top','Details top']]},
+ drawerImplementation:{title:'Drawer build',options:[['custom','Zen'],['native','Native']]},
+ drawerGlassEffect:{title:'Drawer surface',help:'Accented shadow styling for Zen drawers'}
+};
+const groups={watching:['Watching',['autoZen','shortcutEnabled','revealPlaylistOnHover']],scrolling:['Video details',['scrollBehavior','revealMetaOnHover']],playlist:['Playlist',['revealPlaylistOnHover']],navigation:['Navigation',['hideHeader','revealHeaderOnHover']],content:['Other content',['hideRecommendations','hideLiveChat']],opening:['Opening',['sideRevealMode','hoverRevealDelay']],placement:['Placement',['revealSideLayout','sideHoverPosition','sameSideSplit']],appearance:['Appearance',['drawerImplementation','drawerGlassEffect']]};
+const groupTabs={general:['scrolling','watching'],distractions:['navigation','content'],panels:['opening','placement','appearance']};
+const labels={general:'General',distractions:'Distractions',panels:'Panels'};
+const variants={A:['A. Grouped controls','Group every control under clear headings. Longer categories scroll; nothing is folded away.'],B:['B. Common controls first','Show the everyday choices first. Clearly named expandable sections retain every additional control.'],C:['C. Focused settings pages','Start with a short summary. Open one group at a time, then return to its category.']};
+let variant=new URLSearchParams(location.search).get('variant')||'A';if(!variants[variant])variant='A';
+let category='general',page='';
+const expanded=new Set();
+function row(key){
+ const f=fields[key];let title=f.title,help=f.help||'';
+ if(key==='sideHoverPosition'){title=values.revealSideLayout==='same'?'Shared side':'Details side';help=values.revealSideLayout==='same'?'Both panels use this side':'Playlist uses the opposite side';}
+ const id='setting-'+key;
+ const input=f.options?`<select id="${id}" data-key="${key}" ${key==='scrollBehavior'?'aria-describedby="scroll-explanation"':''}>${f.options.map(([value,label])=>`<option value="${value}" ${values[key]===value?'selected':''}>${label}</option>`).join('')}</select>`:f.range?`<input type="range" id="${id}" data-key="${key}" min="0" max="1000" step="20" value="${values[key]}">`:`<input type="checkbox" id="${id}" data-key="${key}" ${values[key]?'checked':''}>`;
+ if(f.range)help=values[key]+'ms · Used with Hover';
+ return `<label class="row" for="${id}"><span><strong>${title}</strong>${help?`<small>${help}</small>`:''}</span>${input}</label>`;
+}
+function scrollingNote(){return `<p class="panel-note" id="scroll-explanation">${values.scrollBehavior==='page'?'The video scrolls out of view. Details and comments stay below it.':values.revealMetaOnHover?'Scroll over the video to open the card. Close with Escape or its edge button.':'Side details is off. Scrolling uses the page.'+(variant==='B'?' Open More viewing controls to enable Side details.':' Enable Side details above to use the card.')}</p>`;}
+function group(key){const [title,keys]=groups[key];return `<fieldset class="group"><legend>${title}</legend>${keys.map(row).join('')}${key==='scrolling'?scrollingNote():''}</fieldset>`;}
+function summary(key){
+ if(key==='watching')return `${values.autoZen?'Auto Zen on':'Auto Zen off'} · ${values.shortcutEnabled?'T shortcut on':'T shortcut off'} · Playlist ${values.revealPlaylistOnHover?'on':'off'}`;
+ if(key==='scrolling')return values.scrollBehavior==='page'?`Scroll page · Side card ${values.revealMetaOnHover?'available':'off'}`:values.revealMetaOnHover?'Side card · Scroll to open':'Page fallback · Side details off';
+ if(key==='playlist')return values.revealPlaylistOnHover?'Playlist access enabled':'Playlist access off';
+ if(key==='navigation')return `${values.hideHeader?'Top bar hidden':'Top bar visible'} · Top hover ${values.revealHeaderOnHover?'on':'off'}`;
+ if(key==='content')return `Recommendations ${values.hideRecommendations?'hidden':'visible'} · Live chat ${values.hideLiveChat?'hidden':'visible'}`;
+ if(key==='opening')return `${values.sideRevealMode==='hover'?'Hover':'Drawer button'} · ${values.hoverRevealDelay}ms`;
+ if(key==='placement'){const side=values.sideHoverPosition==='left'?'Left':'Right';return values.revealSideLayout==='same'?`${side} edge · Top hover: ${values.sameSideSplit==='playlist-top'?'Playlist':'Details'}`:`Details ${side.toLowerCase()} · Playlist ${side==='Left'?'right':'left'}`;}
+ return `${values.drawerImplementation==='custom'?'Zen':'Native'} · Shadow ${values.drawerGlassEffect?'on':'off'}`;
+}
+function fold(key,title,keys,note=''){
+ const descriptions={'general-more':'Side details · T shortcut · Playlist','top-hover':'Reveal navigation at the top edge',split:'Top hover region: '+(values.sameSideSplit==='playlist-top'?'Playlist':'Details'),open:summary('opening'),look:summary('appearance')};
+ return `<details class="fold" data-fold="${key}" ${expanded.has(key)?'open':''}><summary><span>${title}<small>${keys.length} ${keys.length===1?'setting':'settings'} · ${descriptions[key]}</small></span></summary><div class="fold-content">${keys.map(row).join('')}${note}</div></details>`;
+}
+function variantA(){return (category==='panels'?'<p class="panel-note">7 controls. Scroll for appearance settings below.</p>':'')+groupTabs[category].map(group).join('');}
+function variantB(){
+ if(category==='general')return `<fieldset class="group"><legend>Everyday behavior</legend>${row('autoZen')}${row('scrollBehavior')}${scrollingNote()}</fieldset>`+fold('general-more','More viewing controls',['revealMetaOnHover','shortcutEnabled','revealPlaylistOnHover']);
+ if(category==='distractions')return `<fieldset class="group"><legend>Hide content</legend>${['hideHeader','hideRecommendations','hideLiveChat'].map(row).join('')}</fieldset>`+fold('top-hover','Top bar access',['revealHeaderOnHover']);
+ return `<fieldset class="group"><legend>Placement</legend>${row('revealSideLayout')}${row('sideHoverPosition')}<p class="panel-note">${summary('placement')}</p></fieldset>`+fold('split','Shared-edge split',['sameSideSplit'])+fold('open','Opening method and timing',groups.opening[1])+fold('look','Appearance',groups.appearance[1]);
+}
+function variantC(){
+ if(page){const [title,keys]=groups[page];return `<button class="back" data-back>‹ ${labels[category]}</button><h2 class="page-title">${title}</h2><fieldset class="group">${keys.map(row).join('')}${page==='scrolling'?scrollingNote():''}</fieldset>`;}
+ return groupTabs[category].map(key=>`<button class="jump" data-page="${key}"><span><strong>${groups[key][0]}</strong><small>${summary(key)}</small></span><span class="chevron" aria-hidden="true">›</span></button>`).join('')+`<p class="summary-note">${groupTabs[category].reduce((n,key)=>n+groups[key][1].length,0)} settings in ${groupTabs[category].length} groups. Open a group to change it.</p>`;
+}
+function render(){
+ document.getElementById('variant-title').textContent=variants[variant][0];document.getElementById('variant-description').textContent=variants[variant][1];
+ document.getElementById('category-tabs').innerHTML=Object.entries(labels).map(([key,label])=>`<button type="button" role="tab" id="tab-${key}" data-category="${key}" aria-controls="content" aria-selected="${category===key}" tabindex="${category===key?'0':'-1'}">${label}</button>`).join('');
+ const content=document.getElementById('content');content.setAttribute('aria-labelledby','tab-'+category);content.innerHTML={A:variantA,B:variantB,C:variantC}[variant]();content.scrollTop=0;
+ document.getElementById('state').textContent=JSON.stringify(values,null,2);
+ document.querySelectorAll('[data-variant]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.variant===variant)));
+}
+function switchVariant(next){variant=next;page='';const url=new URL(location.href);url.searchParams.set('variant',variant);try{history.replaceState(null,'',url);}catch{/* Embedded preview can restrict URL changes. */}render();}
+function selectCategory(next){category=next;page='';render();}
+function restoreFocus(selector){document.querySelector(selector)?.focus({preventScroll:true});}
+function updateValue(input){
+ const key=input.dataset.key;if(!key)return;
+ const scroll=document.getElementById('content').scrollTop;
+ document.querySelectorAll('[data-fold]').forEach(d=>{if(d.open)expanded.add(d.dataset.fold);else expanded.delete(d.dataset.fold);});
+ values[key]=input.type==='checkbox'?input.checked:input.type==='range'?Number(input.value):input.value;
+ render();document.getElementById('content').scrollTop=scroll;restoreFocus(`[data-key="${key}"]`);
+}
+function bindEvents(){
+ document.addEventListener('click',event=>{const b=event.target.closest('button');if(!b)return;
+  if(b.dataset.variant)switchVariant(b.dataset.variant);
+  else if(b.dataset.cycle){const keys=Object.keys(variants);switchVariant(keys[(keys.indexOf(variant)+Number(b.dataset.cycle)+3)%3]);}
+  else if(b.dataset.category){selectCategory(b.dataset.category);restoreFocus(`[data-category="${category}"]`);}
+  else if(b.dataset.page){page=b.dataset.page;render();restoreFocus('[data-back]');}
+  else if(b.hasAttribute('data-back')){const previous=page;page='';render();restoreFocus(`[data-page="${previous}"]`);}
+ });
+ document.addEventListener('change',event=>updateValue(event.target));
+ document.addEventListener('input',event=>{if(event.target.type==='range'){values[event.target.dataset.key]=Number(event.target.value);event.target.closest('.row').querySelector('small').textContent=event.target.value+'ms · Used with Hover';document.getElementById('state').textContent=JSON.stringify(values,null,2);}});
+ document.addEventListener('toggle',event=>{const key=event.target.dataset?.fold;if(key&&event.target.isConnected){if(event.target.open)expanded.add(key);else expanded.delete(key);}},true);
+ document.addEventListener('keydown',event=>{
+  const tab=event.target.closest('[data-category]');
+  if(tab&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const keys=Object.keys(labels);let i=keys.indexOf(category);i=event.key==='Home'?0:event.key==='End'?2:(i+(event.key==='ArrowRight'?1:2))%3;selectCategory(keys[i]);restoreFocus(`[data-category="${category}"]`);return;}
+  if(event.target.closest('input,select,textarea,button,summary,[contenteditable]'))return;
+  if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();const keys=Object.keys(variants);switchVariant(keys[(keys.indexOf(variant)+(event.key==='ArrowRight'?1:2))%3]);}
+ });
+}
+bindEvents();render();
+</script></body></html>

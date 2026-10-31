@@ -1,4 +1,17 @@
 .DS_Store
 *.zip
 logs/
+node_modules/
 diagnostics/
+
+__pycache__/
+*.py[cod]
+.venv/
+
+.env
+.env.*
+*.log
+coverage/
+
+*.crx
+*.pem
